@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/17 18:49:09 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/17 19:25:13 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,28 @@ typedef struct s_game
 // BUILD MAP
 void	build_map_from_list(t_list *lines, t_map *map);
 
-// PARSERS - MAP
-void	parse_cub_file(const char *filename, t_game *game);
-void	read_cub_lines(int fd, t_game *game, t_list **map_lines);
-int		is_map_line(char *line);
+// CHECKERS
+int		is_wall_or_space(char c);
+int		is_walkable(char c);
+int		is_enclosed(t_map *map, int y, int x);
+int		is_player_char(char c);
+
+// INITS
+void	set_player_position(t_map *map, int x, int y);
+
+// MAP VALIDATOR
+void	validate_map(t_map *map);
+void	check_and_set_player(t_map *map, int x, int y, int *found);
+void	find_player_position(t_map *map);
 
 // PARSERS - CONFIG
-void	parse_config_line(char *line, t_config *config);
 void	parse_rgb(char *line, t_rgb *color);
+void	parse_config_line(char *line, t_config *config);
+
+// PARSERS - MAP
+int		is_map_line(char *line);
+void	read_cub_lines(int fd, t_game *game, t_list **map_lines);
+void	parse_cub_file(const char *filename, t_game *game);
 
 // UTILS
 int		ft_isspace(int c);
