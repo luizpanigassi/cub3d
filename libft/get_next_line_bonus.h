@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 17:24:30 by luinasci          #+#    #+#             */
-/*   Updated: 2024/11/18 16:52:46 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/19 18:09:28 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,10 @@
 # include <stddef.h>
 # include <fcntl.h>
 # include <limits.h>
+# include "libft.h"
 
 char		*ft_strjoin(char const *s1, char const *s2);
 char		*get_next_line(int fd);
-char		*ft_strchr(const char *s, int c);
-void		*ft_calloc(size_t number, size_t size);
-int			ft_strlen(const char *str);
 char		*ft_read_file(char *receiver_buffer, int fd);
 char		*ft_remainder(char *receiver_buffer);
 char		*ft_extract_line(char *receiver_buffer);

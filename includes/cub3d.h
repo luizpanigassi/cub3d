@@ -6,83 +6,93 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/17 19:25:13 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/19 19:52:49 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
 
-# include "libft/libft.h"
+# include "libft.h"
 # include <stdio.h>
 # include <fcntl.h>
+# include <string.h>
+# include <unistd.h>
+# include <stdlib.h>
 
-// Struct for RGB color representation
-typedef struct s_rgb
-{
-	int	r;
-	int	g;
-	int	b;
-}	t_rgb;
+# define MAP_CHARS " 01NSEW"
+# define PLAYER_CHARS "NSEW"
 
-// Struct for texture settings
-typedef struct s_config
+typedef struct s_data
 {
-	char	*texture_north;
-	char	*texture_south;
-	char	*texture_east;
-	char	*texture_west;
-	t_rgb	color_floor;
-	t_rgb	color_ceiling;
-}	t_config;
-
-// Struct for map representation
-typedef struct s_map
-{
-	char	**grid;
-	int		width;
-	int		height;
+	char	*north;
+	char	*south;
+	char	*east;
+	char	*west;
+	char	**map;
+	char	player_direction;
+	int		floor;
+	int		ceiling;
+	int		map_width;
+	int		map_height;
 	int		player_x;
 	int		player_y;
-	char	player_direction;
-}	t_map;
+}	t_data;
 
-// Struct for the game state, combining configuration and map
-typedef struct s_game
+typedef struct s_parse_ctx
 {
-	t_config	config;
-	t_map		map;
-}	t_game;
+	t_data	*data;
+	t_list	**map_lines;
+	int		*max_width;
+}	t_parse_ctx;
 
-// BUILD MAP
-void	build_map_from_list(t_list *lines, t_map *map);
+// ERROR HANDLER
+int		error_exit(char *msg, t_data *data);
 
-// CHECKERS
-int		is_wall_or_space(char c);
-int		is_walkable(char c);
-int		is_enclosed(t_map *map, int y, int x);
-int		is_player_char(char c);
+// FLOOD FILL
+char	**dup_map(t_data *data);
+void	flood_fill(t_data *data, char **map, int x, int y);
 
-// INITS
-void	set_player_position(t_map *map, int x, int y);
+// MAIN
 
 // MAP VALIDATOR
-void	validate_map(t_map *map);
-void	check_and_set_player(t_map *map, int x, int y, int *found);
-void	find_player_position(t_map *map);
 
-// PARSERS - CONFIG
-void	parse_rgb(char *line, t_rgb *color);
-void	parse_config_line(char *line, t_config *config);
+int		is_invalid_tile(t_data *data, int x, int y);
+void	validate_map_char_at(t_data *data, int x, int y, int *player_count);
+void	validate_map_chars(t_data *data);
+void	validate_map_with_flood_fill(t_data *data);
 
-// PARSERS - MAP
-int		is_map_line(char *line);
-void	read_cub_lines(int fd, t_game *game, t_list **map_lines);
-void	parse_cub_file(const char *filename, t_game *game);
+// CUB PARSER
+void	parse_lines_loop(int fd, t_data *data,
+			t_list **map_lines, int *max_width);
+void	check_required_elements(t_data *data);
+t_data	*parse_cub_file(char *filename);
+
+// PARSER
+int		parse_rgb_component(char *part, int *value);
+int		parse_rgb(char **parts, int *rgb);
+int		parse_color(char *line, t_data *data, char id);
+int		parse_texture(char *line, t_data *data, const char *id);
+int		parse_color_line(char *trimmed, t_data *data);
+
+// MAP PROCESSING UTILS
+void	copy_map_lines(t_data *data, t_list *map_lines, int max_width);
+void	process_trimmed_line(char *trimmed, int *map_started, t_parse_ctx *ctx);
+void	allocate_and_fill_map(t_data *data, t_list *map_lines, int max_width);
+void	add_map_line(char *trimmed, t_list **map_lines, int *max_width);
+
+// MAP UTILS
+int		parse_texture_line(char *trimmed, t_data *data);
+int		handle_non_map_line(char *trimmed,
+			t_data *data, t_list **map_lines, int *max_width);
+void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width);
 
 // UTILS
+void	ft_free_array(char **array);
+int		ft_isdigit_str(char *str);
+void	free_data(t_data *data);
+int		ft_strcmp(const char *s1, const char *s2);
+char	*trim_and_free_line(char *line);
 int		ft_isspace(int c);
-void	ft_free_split(char **split);
-int		isempty(char *line);
 
 #endif

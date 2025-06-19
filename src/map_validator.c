@@ -6,76 +6,68 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 18:50:08 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/17 19:23:23 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/19 20:01:44 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	validate_map(t_map *map)
+int	is_invalid_tile(t_data *data, int x, int y)
 {
-	int		y;
-	int		x;
+	if (y < 0 || y >= data->map_height)
+		return (1);
+	if (x < 0 || x >= (int)ft_strlen(data->map[y]))
+		return (1);
+	if (data->map[y][x] == ' ')
+		return (1);
+	return (0);
+}
+
+void	validate_map_char_at(t_data *data, int x, int y, int *player_count)
+{
 	char	c;
 
-	y = 0;
-	while (y < map->height)
+	c = data->map[y][x];
+	if (!ft_strchr(MAP_CHARS, c))
+		error_exit("Wait, your map has invalid characters!", data);
+	if (ft_strchr(PLAYER_CHARS, c))
 	{
-		x = 0;
-		while (map->grid[x][y])
-		{
-			c = map->grid[x][y];
-			if (c != '1' || c != '0' || c != ' ')
-			{
-				ft_putendl_fd("Invalid character in the map!", 2);
-				exit(1);
-			}
-			if (is_walkable(c) && !is_enclosed(map, y, x))
-			{
-				ft_putendl_fd("Wait, there's a hole in the wall!", 2);
-				exit(1);
-			}
-			x++;
-		}
-		y++;
+		(*player_count)++;
+		data->player_x = x;
+		data->player_y = y;
+		data->player_direction = c;
 	}
 }
 
-void	check_and_set_player(t_map *map, int x, int y, int *found)
+void	validate_map_chars(t_data *data)
 {
-	if (is_player_char(map->grid[y][x]))
-	{
-		if (*found)
-		{
-			ft_putendl_fd("Nononono. Only one player allowed!", 2);
-			exit(1);
-		}
-		set_player_position(map, x, y);
-		*found = 1;
-	}
-}
-
-void	find_player_position(t_map *map)
-{
+	int	player_count;
 	int	y;
 	int	x;
-	int	found;
 
 	y = 0;
-	found = 0;
-	while (y < map->height)
+	player_count = 0;
+	while (y < data->map_height)
 	{
 		x = 0;
-		while (map->grid[y][x])
+		while (x < data->map_width)
 		{
-			check_and_set_player(map, x, y, &found);
+			validate_map_char_at(data, x, y, &player_count);
 			x++;
 		}
 		y++;
 	}
-	if (!found)
-	{
-		ft_putendl_fd("Where's the player? TELL ME WHERE HE IS!", 2);
-		exit(1);
-	}
+	if (player_count == 0)
+		error_exit("Wait, there's no player in the map!", data);
+	else if (player_count != 1)
+		error_exit("Wait, there's too many players in the map!", data);
+}
+
+void	validate_map_with_flood_fill(t_data *data)
+{
+	char	**map_copy;
+
+	map_copy = dup_map(data);
+	flood_fill(data, map_copy, data->player_x, data->player_y);
+	ft_free_array(map_copy);
 }

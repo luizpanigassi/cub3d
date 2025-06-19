@@ -6,58 +6,75 @@
 #    By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/17 18:10:20 by luinasci          #+#    #+#              #
-#    Updated: 2025/06/17 18:31:02 by luinasci         ###   ########.fr        #
+#    Updated: 2025/06/19 19:54:30 by luinasci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		=	cub3d
-LIB			=	ar rcs
-RM			=	rm -f
 CC			=	cc
 CFLAGS		=	-Wall -Wextra -Werror
 
-SRCS		=	parse_config.c \
-				parse_file.c \
-				build_map.c
+SRC_DIR		=	src
+UTILS_DIR	=	utils
+OBJ_DIR		=	obj
+MLX_DIR		=	mlx
+LIBFT_DIR	=	libft
 
-UTILS		=	utils.c \
+MLX_LIB		=	$(MLX_DIR)/libmlx.a
+LIBFT_LIB	=	$(LIBFT_DIR)/libft.a
 
-OBJS		=	$(SRCS:.c=.o) $(UTILS:.c=.o)
+MLX_FLAGS	=	-L$(MLX_DIR) -Imlx -Lmlx -lmlx -lXext -lX11 -lm
+INCLUDES	=	-Iincludes -I$(MLX_DIR) -I/usr/include -I$(LIBFT_DIR)
 
-MLX_DIR		= mlx
-MLX_LIB		= $(MLX_DIR)/libmlx.a
-MLX_FLAGS	= -L$(MLX_DIR) -Imlx -Ilibft -Lmlx -lmlx -lXext -lX11 -lm
-INCLUDES	= -I$(MLX_DIR) -I/usr/include -I. -Ilibft
+# List all .c files with their paths
+SRCS = \
+	$(SRC_DIR)/error_handler.c \
+	$(SRC_DIR)/flood_fill.c \
+	$(SRC_DIR)/main.c \
+	$(SRC_DIR)/map_validator.c \
+	$(SRC_DIR)/parser_cub.c \
+	$(SRC_DIR)/parsers.c \
+	$(UTILS_DIR)/map_processing_utils.c \
+	$(UTILS_DIR)/map_utils.c \
+	$(UTILS_DIR)/utils.c \
 
-LIBFT_DIR	= libft
-LIBFT_LIB	= $(LIBFT_DIR)/libft.a
 
-all:		$(NAME)
+# Convert to obj paths
+OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
-$(NAME):	$(OBJS) $(MLX_LIB) $(LIBFT_LIB)
-			$(CC) $(CFLAGS) $(OBJS) $(MLX_FLAGS) -L$(LIBFT_DIR) -lft -o $(NAME)
+# Default rule
+all: $(OBJ_DIR) $(NAME)
 
+# Linking
+$(NAME): $(OBJS) $(MLX_LIB) $(LIBFT_LIB)
+	$(CC) $(CFLAGS) $(OBJS) $(MLX_FLAGS) -L$(LIBFT_DIR) -lft -o $(NAME)
+
+# Compile rule (handles nested folders too)
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Create obj folder
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+# External libs
 $(LIBFT_LIB):
-			@make -C $(LIBFT_DIR)
+	@make -C $(LIBFT_DIR)
 
 $(MLX_LIB):
-			@make -sC $(MLX_DIR) > /dev/null 2>/dev/null
+	@make -sC $(MLX_DIR) > /dev/null 2>/dev/null || true
 
-%.o: %.c $(INCLUDES)
-			$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
+# Cleanup
 clean:
-			$(RM) $(OBJS)
-			@make -C $(MLX_DIR) clean
-			@make -C $(LIBFT_DIR) clean
+	$(RM) $(OBJS)
+	@make -C $(LIBFT_DIR) clean
 
-fclean:		clean
-			$(RM) $(NAME)
-			@make -C $(MLX_DIR) fclean || true
-			@make -C $(LIBFT_DIR) fclean || true
-			$(RM) $(MLX_LIB)
-			$(RM) $(MLX_DIR)/libmlx_*.a
+fclean: clean
+	$(RM) $(NAME)
+	@make -C $(LIBFT_DIR) fclean || true
+	$(RM) $(MLX_LIB)
 
-re:			fclean all
+re: fclean all
 
-.PHONY:		all clean fclean re
+.PHONY: all clean fclean re
