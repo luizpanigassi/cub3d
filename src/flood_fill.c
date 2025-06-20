@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   flood_fill.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 19:49:42 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/19 19:55:41 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:15:43 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	flood_fill(t_data *data, char **map, int x, int y)
 		error_exit("Map leak: flood hit open space!", data);
 	if (!ft_strchr("0NSEW", map[y][x]))
 		return ;
-
 	map[y][x] = 'F';
 	flood_fill(data, map, x + 1, y);
 	flood_fill(data, map, x - 1, y);

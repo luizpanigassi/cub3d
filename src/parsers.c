@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 18:09:50 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/19 19:07:13 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:15:10 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,3 @@ int	parse_color_line(char *trimmed, t_data *data)
 	}
 	return (0);
 }
-

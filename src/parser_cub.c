@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_cub.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 16:35:19 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 12:52:52 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:14:40 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	parse_lines_loop(int fd, t_data *data,
 			continue ;
 		}
 		process_trimmed_line(trimmed, &map_started, &ctx);
-	line = get_next_line(fd);
+		line = get_next_line(fd);
 	}
 }
 

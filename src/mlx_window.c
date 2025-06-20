@@ -6,23 +6,25 @@
 /*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/20 20:02:24 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:24:35 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void draw_square(t_mlx_data *mlx, int x, int y, int color)
+static void	draw_square(t_mlx_data *mlx, int x, int y, int color)
 {
-	int dy = 0;
+	int	dy;
+	int	dx;
+	int	offset;
+
+	dy = 0;
 	while (dy < TILE_SIZE)
 	{
-		int dx = 0;
+		dx = 0;
 		while (dx < TILE_SIZE)
 		{
-			int pixel_x = x + dx;
-			int pixel_y = y + dy;
-			int offset = (pixel_y * mlx->line_size) + (pixel_x * (mlx->bpp / 8));
+			offset = (y + dy * mlx->line_size) + (x + dx * (mlx->bpp / 8));
 			*(unsigned int *)(mlx->img_addr + offset) = color;
 			dx++;
 		}
@@ -30,14 +32,15 @@ static void draw_square(t_mlx_data *mlx, int x, int y, int color)
 	}
 }
 
-static void draw_player(t_data *data, t_mlx_data *mlx)
+static void	draw_player(t_data *data, t_mlx_data *mlx)
 {
-	// Converte posição real do jogador para posição no minimapa
-	int player_px = (int)(data->player_x * TILE_SIZE);
-	int player_py = (int)(data->player_y * TILE_SIZE);
+	int	player_px;
+	int	player_py;
 
-	// Define o tamanho do ponto do jogador no minimapa
-	int size = TILE_SIZE / 3; // tamanho do quadradinho do jogador
+	player_px = (int)(data->player_x * TILE_SIZE);
+	player_py = (int)(data->player_y * TILE_SIZE);
+
+	int size = TILE_SIZE / 3;
 	int half = size / 2;
 	int y = -half;
 
@@ -56,21 +59,25 @@ static void draw_player(t_data *data, t_mlx_data *mlx)
 	}
 }
 
-
-static void minimap(t_data *data, t_mlx_data *mlx)
+static void	minimap(t_data *data, t_mlx_data *mlx)
 {
-	int y = 0;
+	int	y;
+	int	x;
+	int	color;
+	char	tile;
+
+	y = 0;
 	while (y < data->map_height)
 	{
-		int x = 0;
+		x = 0;
 		while (data->map[y][x])
 		{
-			char tile = data->map[y][x];
-			int color = 0x000000; // padrão: fundo preto
+			tile = data->map[y][x];
+			color = 0x000000;
 			if (tile == '1')
-				color = 0xFFFFFF; // parede = branco
+				color = 0xFFFFFF;
 			else if (tile == '0' || tile == 'N' || tile == 'S' || tile == 'E' || tile == 'W')
-				color = 0x808080; // chão = cinza escuro
+				color = 0x808080;
 			draw_square(mlx, x * TILE_SIZE, y * TILE_SIZE, color);
 			x++;
 		}
@@ -79,7 +86,7 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 	draw_player(data, mlx);
 }
 
-static void init_window(t_mlx_data *mlx)
+static void	init_window(t_mlx_data *mlx)
 {
 	mlx->mlx = mlx_init();
 	mlx->win = mlx_new_window(mlx->mlx, W, H, "Cub3d");
@@ -87,10 +94,11 @@ static void init_window(t_mlx_data *mlx)
 	mlx->img_addr = mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->line_size, &mlx->endian);
 }
 
-void render_image(t_data *data)
+void	render_image(t_data *data)
 {
-	t_mlx_data *mlx = malloc(sizeof(t_mlx_data));
-	
+	t_mlx_data	*mlx;
+
+	mlx = malloc(sizeof(t_mlx_data));
 	init_window(mlx);
 	minimap(data, mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
