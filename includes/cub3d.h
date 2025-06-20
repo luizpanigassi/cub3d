@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 11:48:43 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 12:17:36 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <string.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <mlx.h>
+# include <math.h>
 
 # define MAP_CHARS " 01NSEW"
 # define PLAYER_CHARS "NSEW"
@@ -29,6 +31,8 @@
 # define D_KEY 100
 # define LEFT_KEY 65361
 # define RIGHT_KEY 65363
+# define MOVE_SPEED 0.1
+# define ROTATION_SPEED 0.05
 
 typedef struct s_keys
 {
@@ -46,6 +50,25 @@ typedef struct s_game
 	t_data	*data;
 	t_keys	keys;
 }	t_game;
+
+typedef struct mlx_data
+{
+	void	*mlx;
+	void	*win;
+	void	*img;
+	int		bpp;
+	int		line_size;
+	int		endian;
+	char	*img_addr;
+	t_data	*data;
+	t_keys	keys;
+	double	pos_x;
+	double	pos_y;
+	double	dir_x;
+	double	dir_y;
+	double	plane_x;
+	double	plane_y;
+}	t_mlx_data;
 
 typedef struct s_data
 {
@@ -70,14 +93,9 @@ typedef struct s_parse_ctx
 	int		*max_width;
 }	t_parse_ctx;
 
-typedef struct mlx_data
-{
-	void	*mlx;
-	void	*win;
-	void	*img;
-	t_data	*data;
-	t_keys	keys;
-}	t_mlx_data;
+// CONTROLLER
+void	try_movement(t_mlx_data *mlx, double dx, double dy);
+int		is_walkable(t_data *data, double x, double y);
 
 // ERROR HANDLER
 int		error_exit(char *msg, t_data *data);
