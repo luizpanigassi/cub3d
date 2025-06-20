@@ -6,7 +6,7 @@
 /*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 20:03:10 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:44:07 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,5 +166,6 @@ int		ft_isspace(int c);
 
 //MLX_WINDOW
 void render_image(t_data *data);
+void redraw_minimap(t_data *data, t_mlx_data *mlx);
 
 #endif

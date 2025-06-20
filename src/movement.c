@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:20:47 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 15:06:30 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:59:27 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,4 +108,6 @@ void	update_player_position(t_game *game)
 	calculate_movement(mlx, &move_x, &move_y);
 	try_movement(mlx, move_x, move_y);
 	rotate_player(mlx);
+	redraw_minimap(game->data, game->mlx);
+	printf("%f\n", game->mlx->pos_x);//TESTE
 }

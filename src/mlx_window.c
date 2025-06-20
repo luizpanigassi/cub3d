@@ -6,7 +6,7 @@
 /*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/20 20:24:35 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:56:58 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	draw_square(t_mlx_data *mlx, int x, int y, int color)
 		dx = 0;
 		while (dx < TILE_SIZE)
 		{
-			offset = (y + dy * mlx->line_size) + (x + dx * (mlx->bpp / 8));
+			offset = (y + dy) * mlx->line_size + (x + dx) * (mlx->bpp / 8);
 			*(unsigned int *)(mlx->img_addr + offset) = color;
 			dx++;
 		}
@@ -94,14 +94,20 @@ static void	init_window(t_mlx_data *mlx)
 	mlx->img_addr = mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->line_size, &mlx->endian);
 }
 
+void redraw_minimap(t_data *data, t_mlx_data *mlx)
+{
+	ft_bzero(mlx->img_addr, H * mlx->line_size);
+	minimap(data, mlx);
+	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
+}
+
 void	render_image(t_data *data)
 {
 	t_mlx_data	*mlx;
 
 	mlx = malloc(sizeof(t_mlx_data));
 	init_window(mlx);
-	minimap(data, mlx);
-	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
+	redraw_minimap(data, mlx);
 	events(mlx);
 	mlx_loop(mlx->mlx);
 }
