@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/19 19:52:49 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 11:48:43 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,30 @@
 
 # define MAP_CHARS " 01NSEW"
 # define PLAYER_CHARS "NSEW"
+# define ESC_KEY 65307
+# define W_KEY 119
+# define A_KEY 97
+# define S_KEY 115
+# define D_KEY 100
+# define LEFT_KEY 65361
+# define RIGHT_KEY 65363
+
+typedef struct s_keys
+{
+	int	w;
+	int	a;
+	int	s;
+	int	d;
+	int	left;
+	int	right;
+	int	esc;
+}	t_keys;
+
+typedef struct s_game
+{
+	t_data	*data;
+	t_keys	keys;
+}	t_game;
 
 typedef struct s_data
 {
@@ -46,6 +70,15 @@ typedef struct s_parse_ctx
 	int		*max_width;
 }	t_parse_ctx;
 
+typedef struct mlx_data
+{
+	void	*mlx;
+	void	*win;
+	void	*img;
+	t_data	*data;
+	t_keys	keys;
+}	t_mlx_data;
+
 // ERROR HANDLER
 int		error_exit(char *msg, t_data *data);
 
@@ -61,6 +94,11 @@ int		is_invalid_tile(t_data *data, int x, int y);
 void	validate_map_char_at(t_data *data, int x, int y, int *player_count);
 void	validate_map_chars(t_data *data);
 void	validate_map_with_flood_fill(t_data *data);
+
+// MOVEMENT
+int		key_press(int keycode, t_game *game);
+int		key_release(int keycode, t_game *game);
+void	update_player_position(t_game *game);
 
 // CUB PARSER
 void	parse_lines_loop(int fd, t_data *data,
