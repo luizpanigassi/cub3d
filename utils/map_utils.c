@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:42:35 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/19 19:01:11 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 12:53:21 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	parse_texture_line(char *trimmed, t_data *data)
 {
-	printf("TRYING TO PARSE TEXTURE: '%s'\n", trimmed); // DEBUG
 	if (!ft_strncmp(trimmed, "NO", 2) && ft_isspace(trimmed[2]))
 		return (parse_texture(trimmed, data, "NO"));
 	else if (!ft_strncmp(trimmed, "SO", 2) && ft_isspace(trimmed[2]))

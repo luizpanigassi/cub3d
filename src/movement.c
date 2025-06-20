@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:20:47 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 12:48:37 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 12:51:31 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	key_release(int keycode, t_game *game)
 	return (0);
 }
 
-static void	rotate_player(t_mlx_data *mlx)
+void	rotate_player(t_mlx_data *mlx)
 {
 	double	old_dir_x;
 	double	old_plane_x;

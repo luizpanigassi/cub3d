@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 12:17:36 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 12:53:37 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,10 @@ int		is_walkable(t_data *data, double x, double y);
 // ERROR HANDLER
 int		error_exit(char *msg, t_data *data);
 
+// EVENTS
+int		close_event(t_mlx_data *mlx);
+void	events(t_mlx_data *mlx);
+
 // FLOOD FILL
 char	**dup_map(t_data *data);
 void	flood_fill(t_data *data, char **map, int x, int y);
@@ -116,6 +120,7 @@ void	validate_map_with_flood_fill(t_data *data);
 // MOVEMENT
 int		key_press(int keycode, t_game *game);
 int		key_release(int keycode, t_game *game);
+void	rotate_player(t_mlx_data *mlx);
 void	update_player_position(t_game *game);
 
 // CUB PARSER

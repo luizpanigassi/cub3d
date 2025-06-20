@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 16:35:19 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/19 19:53:11 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 12:52:52 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,6 @@ t_data	*parse_cub_file(char *filename)
 	max_width = 0;
 	parse_lines_loop(fd, data, &map_lines, &max_width);
 	close(fd);
-	printf("N: %s\nS: %s\nE: %s\nW: %s\nF: %d\nC: %d\n",
-	data->north, data->south, data->east, data->west,
-	data->floor, data->ceiling); //debug
 	check_required_elements(data);
 	allocate_and_fill_map(data, map_lines, max_width);
 	ft_lstclear(&map_lines, free);
