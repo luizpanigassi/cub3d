@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:20:47 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 12:33:54 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 12:48:37 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,34 @@ int	key_release(int keycode, t_game *game)
 	return (0);
 }
 
+static void	rotate_player(t_mlx_data *mlx)
+{
+	double	old_dir_x;
+	double	old_plane_x;
+	double	angle;
+
+	old_dir_x = mlx->dir_x;
+	old_plane_x = mlx->plane_x;
+	angle = 0;
+	if (mlx->keys.left)
+		angle -= ROTATION_SPEED;
+	if (mlx->keys.right)
+		angle += ROTATION_SPEED;
+	if (angle != 0)
+	{
+		mlx->dir_x = mlx->dir_x * cos(angle) - mlx->dir_y * sin(angle);
+		mlx->dir_y = old_dir_x * sin(angle) + mlx->dir_y * cos(angle);
+		mlx->plane_x = mlx->plane_x * cos(angle) - mlx->plane_y * sin(angle);
+		mlx->plane_y = old_plane_x * sin(angle) + mlx->plane_y * cos(angle);
+	}
+}
+
 void	update_player_position(t_mlx_data *mlx)
 {
 	double	dir_x;
 	double	dir_y;
 	double	plane_x;
 	double	plane_y;
-	double	old_dir_x;
-	double	old_plane_x;
 
 	dir_x = mlx->dir_x;
 	dir_y = mlx->dir_y;
@@ -71,24 +91,5 @@ void	update_player_position(t_mlx_data *mlx)
 		try_movement(mlx, -plane_x * MOVE_SPEED, -plane_y * MOVE_SPEED);
 	if (mlx->keys.d)
 		try_movement(mlx, plane_x * MOVE_SPEED, plane_y * MOVE_SPEED);
-	if (mlx->keys.left || mlx->keys.right)
-	{
-		old_dir_x = mlx->dir_x;
-		old_plane_x = mlx->plane_x;
-		if (mlx->keys.left)
-		{
-			mlx->dir_x = mlx->dir_x * cos(-ROTATION_SPEED) - mlx->dir_y * sin(-ROTATION_SPEED);
-			mlx->dir_y = old_dir_x * sin(-ROTATION_SPEED) + mlx->dir_y * cos(-ROTATION_SPEED);
-			mlx->plane_x = mlx->plane_x * cos(-ROTATION_SPEED) - mlx->plane_y * sin(-ROTATION_SPEED);
-			mlx->plane_y = old_plane_x * sin(-ROTATION_SPEED) + mlx->plane_y * cos(-ROTATION_SPEED);
-		}
-		if (mlx->keys.right)
-		{
-			mlx->dir_x = mlx->dir_x * cos(ROTATION_SPEED) - mlx->dir_y * sin(ROTATION_SPEED);
-			mlx->dir_y = old_dir_x * sin(ROTATION_SPEED) + mlx->dir_y * cos(ROTATION_SPEED);
-			mlx->plane_x = mlx->plane_x * cos(ROTATION_SPEED) - mlx->plane_y * sin(ROTATION_SPEED);
-			mlx->plane_y = old_plane_x * sin(ROTATION_SPEED) + mlx->plane_y * cos(ROTATION_SPEED);
-		}
-	}
-
+	rotate_player(mlx);
 }
