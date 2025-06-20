@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:44:28 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 15:42:06 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:04:08 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	main(int argc, char **argv)
 
 	// Clean exit (error_exit handles memory cleanup)
 	printf("Map parsed successfully!\n");
+	render_image(data);
 	free_data(data);
 	return (0);
 }

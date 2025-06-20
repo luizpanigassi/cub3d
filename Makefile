@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+         #
+#    By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/17 18:10:20 by luinasci          #+#    #+#              #
-#    Updated: 2025/06/20 15:37:54 by luinasci         ###   ########.fr        #
+#    Updated: 2025/06/20 20:01:53 by jcologne         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,7 @@ SRCS = \
 	$(SRC_DIR)/movement.c \
 	$(SRC_DIR)/parser_cub.c \
 	$(SRC_DIR)/parsers.c \
+	$(SRC_DIR)/mlx_window.c \
 	$(UTILS_DIR)/map_processing_utils.c \
 	$(UTILS_DIR)/map_utils.c \
 	$(UTILS_DIR)/utils.c \

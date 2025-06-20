@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 14:55:54 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 20:03:10 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,11 @@
 # define MOVE_SPEED 0.1
 # define ROTATION_SPEED 0.05
 # define COLLISION_MARGIN 0.1
+
+//WINDOW SIZE
+# define W 1200
+# define H 800
+# define TILE_SIZE 40
 
 typedef struct s_data
 {
@@ -158,5 +163,8 @@ void	free_data(t_data *data);
 int		ft_strcmp(const char *s1, const char *s2);
 char	*trim_and_free_line(char *line);
 int		ft_isspace(int c);
+
+//MLX_WINDOW
+void render_image(t_data *data);
 
 #endif
