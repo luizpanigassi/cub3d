@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:45:31 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 11:53:41 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 15:43:29 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	close_event(t_mlx_data *mlx)
 
 void	events(t_mlx_data *mlx)
 {
-	mlx_hook(mlx->win, 2, 1L << 0, key_press, mlx); // Key down
-	mlx_hook(mlx->win, 3, 1L << 1, key_release, mlx); // Key up
-	mlx_hook(mlx->win, 17, 0, close_event, mlx); // Close
+	mlx_hook(mlx->win, 2, 1L << 0, key_press, mlx);
+	mlx_hook(mlx->win, 3, 1L << 1, key_release, mlx);
+	mlx_hook(mlx->win, 17, 0, close_event, mlx);
 }

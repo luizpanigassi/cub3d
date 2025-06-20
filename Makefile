@@ -6,7 +6,7 @@
 #    By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/17 18:10:20 by luinasci          #+#    #+#              #
-#    Updated: 2025/06/19 19:54:30 by luinasci         ###   ########.fr        #
+#    Updated: 2025/06/20 15:37:54 by luinasci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,16 +28,18 @@ INCLUDES	=	-Iincludes -I$(MLX_DIR) -I/usr/include -I$(LIBFT_DIR)
 
 # List all .c files with their paths
 SRCS = \
+	$(SRC_DIR)/controller.c \
 	$(SRC_DIR)/error_handler.c \
+	$(SRC_DIR)/events.c \
 	$(SRC_DIR)/flood_fill.c \
 	$(SRC_DIR)/main.c \
 	$(SRC_DIR)/map_validator.c \
+	$(SRC_DIR)/movement.c \
 	$(SRC_DIR)/parser_cub.c \
 	$(SRC_DIR)/parsers.c \
 	$(UTILS_DIR)/map_processing_utils.c \
 	$(UTILS_DIR)/map_utils.c \
 	$(UTILS_DIR)/utils.c \
-
 
 # Convert to obj paths
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
@@ -78,3 +80,34 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
+#terminal tester
+
+# Terminal Tester
+TERMINAL_TEST_NAME = terminal_test
+TERMINAL_TEST_SRC = $(SRC_DIR)/terminal_test.c
+TERMINAL_TEST_OBJS = $(TERMINAL_TEST_SRC:%.c=$(OBJ_DIR)/%.o)
+
+# Add all required sources used by the test
+TERMINAL_EXTRA_SRCS = \
+	$(SRC_DIR)/controller.c \
+	$(SRC_DIR)/movement.c \
+	$(SRC_DIR)/parser_cub.c \
+	$(SRC_DIR)/error_handler.c \
+	$(SRC_DIR)/flood_fill.c \
+	$(SRC_DIR)/map_validator.c \
+	$(UTILS_DIR)/utils.c \
+	$(UTILS_DIR)/map_processing_utils.c \
+	$(UTILS_DIR)/map_utils.c \
+	$(SRC_DIR)/parsers.c \
+	$(SRC_DIR)/events.c \
+
+
+TERMINAL_EXTRA_OBJS = $(TERMINAL_EXTRA_SRCS:%.c=$(OBJ_DIR)/%.o)
+
+terminal_test: $(TERMINAL_TEST_OBJS) $(TERMINAL_EXTRA_OBJS) $(LIBFT_LIB)
+	$(CC) $(CFLAGS) $(INCLUDES) $(TERMINAL_TEST_OBJS) $(TERMINAL_EXTRA_OBJS) $(LIBFT_LIB) -lm -o $(TERMINAL_TEST_NAME)
+
+# Optional cleanup rule for test binary
+clean_test:
+	$(RM) $(TERMINAL_TEST_OBJS) $(TERMINAL_EXTRA_OBJS) $(TERMINAL_TEST_NAME)

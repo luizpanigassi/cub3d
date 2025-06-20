@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:20:47 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 12:51:31 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 15:06:30 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,24 +72,40 @@ void	rotate_player(t_mlx_data *mlx)
 	}
 }
 
-void	update_player_position(t_mlx_data *mlx)
+void	calculate_movement(t_mlx_data *mlx, double *move_x, double *move_y)
 {
-	double	dir_x;
-	double	dir_y;
-	double	plane_x;
-	double	plane_y;
-
-	dir_x = mlx->dir_x;
-	dir_y = mlx->dir_y;
-	plane_x = mlx->plane_x;
-	plane_y = mlx->plane_y;
+	*move_x = 0;
+	*move_y = 0;
 	if (mlx->keys.w)
-		try_movement(mlx, dir_x * MOVE_SPEED, dir_y * MOVE_SPEED);
+	{
+		*move_x += mlx->dir_x * MOVE_SPEED;
+		*move_y += mlx->dir_y * MOVE_SPEED;
+	}
 	if (mlx->keys.s)
-		try_movement(mlx, -dir_x * MOVE_SPEED, -dir_y * MOVE_SPEED);
+	{
+		*move_x -= mlx->dir_x * MOVE_SPEED;
+		*move_y -= mlx->dir_y * MOVE_SPEED;
+	}
 	if (mlx->keys.a)
-		try_movement(mlx, -plane_x * MOVE_SPEED, -plane_y * MOVE_SPEED);
+	{
+		*move_x += mlx->plane_x * MOVE_SPEED;
+		*move_y += mlx->plane_y * MOVE_SPEED;
+	}
 	if (mlx->keys.d)
-		try_movement(mlx, plane_x * MOVE_SPEED, plane_y * MOVE_SPEED);
+	{
+		*move_x -= mlx->plane_x * MOVE_SPEED;
+		*move_y -= mlx->plane_y * MOVE_SPEED;
+	}
+}
+
+void	update_player_position(t_game *game)
+{
+	double		move_x;
+	double		move_y;
+	t_mlx_data	*mlx;
+
+	mlx = (t_mlx_data *)game;
+	calculate_movement(mlx, &move_x, &move_y);
+	try_movement(mlx, move_x, move_y);
 	rotate_player(mlx);
 }

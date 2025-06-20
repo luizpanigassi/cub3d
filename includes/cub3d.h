@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 12:53:37 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/20 14:55:54 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <string.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include <mlx.h>
+# include "../mlx/mlx.h"
 # include <math.h>
 
 # define MAP_CHARS " 01NSEW"
@@ -33,6 +33,23 @@
 # define RIGHT_KEY 65363
 # define MOVE_SPEED 0.1
 # define ROTATION_SPEED 0.05
+# define COLLISION_MARGIN 0.1
+
+typedef struct s_data
+{
+	char	*north;
+	char	*south;
+	char	*east;
+	char	*west;
+	char	**map;
+	char	player_direction;
+	int		floor;
+	int		ceiling;
+	int		map_width;
+	int		map_height;
+	int		player_x;
+	int		player_y;
+}	t_data;
 
 typedef struct s_keys
 {
@@ -44,12 +61,6 @@ typedef struct s_keys
 	int	right;
 	int	esc;
 }	t_keys;
-
-typedef struct s_game
-{
-	t_data	*data;
-	t_keys	keys;
-}	t_game;
 
 typedef struct mlx_data
 {
@@ -70,28 +81,19 @@ typedef struct mlx_data
 	double	plane_y;
 }	t_mlx_data;
 
-typedef struct s_data
-{
-	char	*north;
-	char	*south;
-	char	*east;
-	char	*west;
-	char	**map;
-	char	player_direction;
-	int		floor;
-	int		ceiling;
-	int		map_width;
-	int		map_height;
-	int		player_x;
-	int		player_y;
-}	t_data;
-
 typedef struct s_parse_ctx
 {
 	t_data	*data;
 	t_list	**map_lines;
 	int		*max_width;
 }	t_parse_ctx;
+
+typedef struct s_game
+{
+	t_data		*data;
+	t_keys		keys;
+	t_mlx_data	*mlx;
+}	t_game;
 
 // CONTROLLER
 void	try_movement(t_mlx_data *mlx, double dx, double dy);
@@ -122,6 +124,7 @@ int		key_press(int keycode, t_game *game);
 int		key_release(int keycode, t_game *game);
 void	rotate_player(t_mlx_data *mlx);
 void	update_player_position(t_game *game);
+void	calculate_movement(t_mlx_data *mlx, double *move_x, double *move_y);
 
 // CUB PARSER
 void	parse_lines_loop(int fd, t_data *data,
