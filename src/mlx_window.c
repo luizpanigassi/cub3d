@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_window.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/23 08:36:54 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/23 13:45:50 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,13 @@ static void	draw_square(t_mlx_data *mlx, int x, int y, int color)
 	}
 }
 
-static void	draw_player(t_data *data, t_mlx_data *mlx)
+static void	draw_player(t_mlx_data *mlx)
 {
 	int	player_px;
 	int	player_py;
 
-	player_px = (int)(data->player_x * TILE_SIZE);
-	player_py = (int)(data->player_y * TILE_SIZE);
+	player_px = (int)(mlx->pos_x * TILE_SIZE);
+	player_py = (int)(mlx->pos_y * TILE_SIZE);
 
 	int size = TILE_SIZE / 3;
 	int half = size / 2;
@@ -83,7 +83,7 @@ static void	minimap(t_data *data, t_mlx_data *mlx)
 		}
 		y++;
 	}
-	draw_player(data, mlx);
+	draw_player(mlx);
 }
 
 void redraw_minimap(t_data *data, t_mlx_data *mlx)
@@ -95,7 +95,9 @@ void redraw_minimap(t_data *data, t_mlx_data *mlx)
 
 static int game_loop(t_game *game)
 {
+	game->mlx->pos_x = game->mlx->pos_x +0.05;
 	update_player_position(game);
+	redraw_minimap(game->data, game->mlx);
 	return (0);
 }
 
@@ -110,6 +112,10 @@ void	render_image(t_data *data)
 	game->mlx = mlx;
 	mlx->data = data;
 	init_window(mlx);
+	printf("mlx->mlx: %p\n", mlx->mlx);
+	printf("mlx->win: %p\n", mlx->win);
+	printf("mlx->img: %p\n", mlx->img);
+	printf("mlx->img_addr: %p\n", mlx->img_addr);
 	init_player(game);
 	redraw_minimap(data, mlx);
 	events(mlx);

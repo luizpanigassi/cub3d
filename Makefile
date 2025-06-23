@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/17 18:10:20 by luinasci          #+#    #+#              #
-#    Updated: 2025/06/23 08:13:36 by jcologne         ###   ########.fr        #
+#    Updated: 2025/06/23 12:33:17 by jcologne         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -113,3 +113,5 @@ terminal_test: $(TERMINAL_TEST_OBJS) $(TERMINAL_EXTRA_OBJS) $(LIBFT_LIB)
 # Optional cleanup rule for test binary
 clean_test:
 	$(RM) $(TERMINAL_TEST_OBJS) $(TERMINAL_EXTRA_OBJS) $(TERMINAL_TEST_NAME)
+
+
