@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/23 08:50:14 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/23 17:06:35 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ typedef struct mlx_data
 	int		endian;
 	char	*img_addr;
 	t_data	*data;
-	t_keys	keys;
+	t_keys	*keys;
 	double	pos_x;
 	double	pos_y;
 	double	dir_x;
@@ -108,8 +108,8 @@ int		is_walkable(t_data *data, double x, double y);
 int		error_exit(char *msg, t_data *data);
 
 // EVENTS
-int		close_event(t_mlx_data *mlx);
-void	events(t_mlx_data *mlx);
+int		close_event(t_game *game);
+void	events(t_game *game);
 
 // FLOOD FILL
 char	**dup_map(t_data *data);
@@ -165,8 +165,8 @@ char	*trim_and_free_line(char *line);
 int		ft_isspace(int c);
 
 //MLX_WINDOW
-void render_image(t_data *data);
-void redraw_minimap(t_data *data, t_mlx_data *mlx);
+void	render_image(t_data *data);
+void	redraw_minimap(t_data *data, t_mlx_data *mlx);
 
 //INIT
 void	init_window(t_mlx_data *mlx);

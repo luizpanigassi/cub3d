@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:42:35 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 12:53:21 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/23 17:34:09 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,3 @@ void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width)
 {
 	add_map_line(trimmed, map_lines, max_width);
 }
-
-

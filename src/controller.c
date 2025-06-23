@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controller.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:04:21 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/23 13:10:45 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/23 17:34:31 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,29 +19,25 @@ int	is_walkable(t_data *data, double x, double y)
 
 	map_x = (int)x;
 	map_y = (int)y;
-	if (map_y < 0 || map_y >= data->map_height || map_x < 0
-		|| map_x >= data->map_width)
-	{
-		printf("Blocked: [%d][%d] = '%c'\n", map_y, map_x,
-			data->map[map_y][map_x]); //debug
+	if (map_y < 0 || map_y >= data->map_height
+		|| map_x < 0 || map_x >= data->map_width)
 		return (0);
-	}
+	if (data->map[map_y][map_x] == '1')
+		return (0);
 	return (1);
 }
 
 void	try_movement(t_mlx_data *mlx, double dx, double dy)
 {
-	double	new_x;
-	double	new_y;
+	double	new_x = mlx->pos_x + dx;
+	double	new_y = mlx->pos_y + dy;
 
-	new_x = mlx->pos_x + dx;
-	new_y = mlx->pos_y + dy;
-	printf("Trying to move to: (%.2f, %.2f)\n", new_x, new_y); //debug
-	if (is_walkable(mlx->data, new_x + COLLISION_MARGIN, mlx->pos_y)
-		&& is_walkable(mlx->data, new_x - COLLISION_MARGIN, mlx->pos_y))
+	if (is_walkable(mlx->data, new_x + COLLISION_MARGIN, mlx->pos_y) &&
+		is_walkable(mlx->data, new_x - COLLISION_MARGIN, mlx->pos_y))
 		mlx->pos_x = new_x;
-	if (is_walkable(mlx->data, mlx->pos_x, new_y + COLLISION_MARGIN)
-		&& is_walkable(mlx->data, mlx->pos_x, new_y - COLLISION_MARGIN))
+	if (is_walkable(mlx->data, mlx->pos_x, new_y + COLLISION_MARGIN) &&
+		is_walkable(mlx->data, mlx->pos_x, new_y - COLLISION_MARGIN))
 		mlx->pos_y = new_y;
-	printf("Moved to: (%.2f, %.2f)\n", mlx->pos_x, mlx->pos_y); //debug
+
 }
+

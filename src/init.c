@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 08:10:39 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/23 13:30:55 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/23 16:57:42 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,7 @@ static void init_keys(t_keys *keys)
 
 void	init_player(t_game *game)
 {
-	t_keys	*keys;
-
-	keys = malloc(sizeof(t_keys));
-	init_keys(keys);
+	init_keys(&game->keys);
 	game->mlx->pos_x = game->data->player_x + 0.5;
 	game->mlx->pos_y = game->data->player_y + 0.5;
 	setup_orientation(game->mlx, game->data->player_direction);
