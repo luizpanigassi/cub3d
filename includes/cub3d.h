@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/23 17:06:35 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/23 17:55:48 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define MOVE_SPEED 0.1
 # define ROTATION_SPEED 0.05
 # define COLLISION_MARGIN 0.1
+# define NUM_RAYS 1200
 
 //WINDOW SIZE
 # define W 1200

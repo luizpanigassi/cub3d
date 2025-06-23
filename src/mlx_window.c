@@ -3,14 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_window.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/23 17:33:36 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/23 17:58:50 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+static void draw_line(t_mlx_data *mlx)
+{
+	int line_length = TILE_SIZE;
+	int start_x = (int)(mlx->pos_x * TILE_SIZE);
+	int start_y = (int)(mlx->pos_y * TILE_SIZE);
+	double dir_x = mlx->dir_x;
+	double dir_y = mlx->dir_y;
+	int end_x = (int)(start_x + dir_x * line_length);
+	int end_y = (int)(start_y + dir_y * line_length);
+
+	int dx = abs(end_x - start_x);
+	int dy = abs(end_y - start_y);
+	int sx = (start_x < end_x) ? 1 : -1;
+	int sy = (start_y < end_y) ? 1 : -1;
+	int err = dx - dy;
+	int x = start_x;
+	int y = start_y;
+	int offset;
+
+	while (1)
+	{
+		if (x >= 0 && x < W && y >= 0 && y < H)
+		{
+			offset = y * mlx->line_size + x * (mlx->bpp / 8);
+			*(unsigned int *)(mlx->img_addr + offset) = 0x00FF00;
+		}
+		if (x == end_x && y == end_y)
+			break;
+		int e2 = 2 * err;
+		if (e2 > -dy)
+		{
+			err -= dy;
+			x += sx;
+		}
+		if (e2 < dx)
+		{
+			err += dx;
+			y += sy;
+		}
+	}
+}
 
 static void draw_square(t_mlx_data *mlx, int x, int y, int color)
 {
@@ -84,14 +126,13 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 				color = 0xFFFFFF;
 			else if (tile == '0' || ft_strchr("NSEW", tile))
 				color = 0x808080;
-
-
 			draw_square(mlx, x * TILE_SIZE, y * TILE_SIZE, color);
 			x++;
 		}
 		y++;
 	}
 	draw_player(mlx);
+	draw_line(mlx);
 }
 
 void redraw_minimap(t_data *data, t_mlx_data *mlx)
@@ -104,6 +145,7 @@ void redraw_minimap(t_data *data, t_mlx_data *mlx)
 static int game_loop(t_game *game)
 {
 	update_player_position(game);
+	//draw_vision(game);
 	redraw_minimap(game->data, game->mlx);
 	return (0);
 }
@@ -121,7 +163,7 @@ void render_image(t_data *data)
 	mlx->keys = &game->keys;
 	init_window(mlx);
 	init_player(game);
-	redraw_minimap(data, mlx);
+	//redraw_minimap(data, mlx);
 	events(game);
 	mlx_loop_hook(mlx->mlx, game_loop, game);
 	mlx_loop(mlx->mlx);
