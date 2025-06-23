@@ -6,7 +6,7 @@
 /*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 20:44:07 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/23 08:50:14 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,8 @@ typedef struct s_parse_ctx
 typedef struct s_game
 {
 	t_data		*data;
-	t_keys		keys;
 	t_mlx_data	*mlx;
+	t_keys		keys;
 }	t_game;
 
 // CONTROLLER
@@ -167,5 +167,9 @@ int		ft_isspace(int c);
 //MLX_WINDOW
 void render_image(t_data *data);
 void redraw_minimap(t_data *data, t_mlx_data *mlx);
+
+//INIT
+void	init_window(t_mlx_data *mlx);
+void	init_player(t_game *game);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/20 20:56:58 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/23 08:36:54 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,6 @@ static void	minimap(t_data *data, t_mlx_data *mlx)
 	draw_player(data, mlx);
 }
 
-static void	init_window(t_mlx_data *mlx)
-{
-	mlx->mlx = mlx_init();
-	mlx->win = mlx_new_window(mlx->mlx, W, H, "Cub3d");
-	mlx->img = mlx_new_image(mlx->mlx, W, H);
-	mlx->img_addr = mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->line_size, &mlx->endian);
-}
-
 void redraw_minimap(t_data *data, t_mlx_data *mlx)
 {
 	ft_bzero(mlx->img_addr, H * mlx->line_size);
@@ -101,13 +93,26 @@ void redraw_minimap(t_data *data, t_mlx_data *mlx)
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
 
+static int game_loop(t_game *game)
+{
+	update_player_position(game);
+	return (0);
+}
+
 void	render_image(t_data *data)
 {
 	t_mlx_data	*mlx;
+	t_game		*game;
 
 	mlx = malloc(sizeof(t_mlx_data));
+	game = malloc(sizeof(t_game));
+	game->data = data;
+	game->mlx = mlx;
+	mlx->data = data;
 	init_window(mlx);
+	init_player(game);
 	redraw_minimap(data, mlx);
 	events(mlx);
+	mlx_loop_hook(mlx->mlx, game_loop, game);
 	mlx_loop(mlx->mlx);
 }
