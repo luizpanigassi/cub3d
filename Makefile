@@ -6,7 +6,7 @@
 #    By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/17 18:10:20 by luinasci          #+#    #+#              #
-#    Updated: 2025/06/23 12:33:17 by jcologne         ###   ########.fr        #
+#    Updated: 2025/06/23 15:22:24 by jcologne         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -80,6 +80,9 @@ fclean: clean
 	$(RM) $(MLX_LIB)
 
 re: fclean all
+
+clone:
+	git clone https://github.com/42paris/minilibx-linux.git mlx
 
 .PHONY: all clean fclean re
 
