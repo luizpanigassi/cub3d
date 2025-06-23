@@ -6,7 +6,7 @@
 /*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:20:47 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/23 12:44:40 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/23 15:04:06 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,4 @@ void	update_player_position(t_game *game)
 	calculate_movement(game->mlx, &move_x, &move_y);
 	try_movement(game->mlx, move_x, move_y);
 	rotate_player(game->mlx);
-	redraw_minimap(game->data, game->mlx);
-	printf("%f\n", game->mlx->pos_x);//TESTE
 }

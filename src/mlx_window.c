@@ -6,7 +6,7 @@
 /*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/23 13:45:50 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/23 14:03:53 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,22 +36,21 @@ static void	draw_player(t_mlx_data *mlx)
 {
 	int	player_px;
 	int	player_py;
+	int	y;
+	int	x;
+	int	offset;
 
 	player_px = (int)(mlx->pos_x * TILE_SIZE);
 	player_py = (int)(mlx->pos_y * TILE_SIZE);
 
-	int size = TILE_SIZE / 3;
-	int half = size / 2;
-	int y = -half;
+	y = -(TILE_SIZE / 3) / 2;
 
-	while (y < half)
+	while (y < (TILE_SIZE / 3) / 2)
 	{
-		int x = -half;
-		while (x < half)
+		x = -(TILE_SIZE / 3) / 2;
+		while (x < (TILE_SIZE / 3) / 2)
 		{
-			int pixel_x = player_px + x;
-			int pixel_y = player_py + y;
-			int offset = (pixel_y * mlx->line_size) + (pixel_x * (mlx->bpp / 8));
+			offset = ((player_py + y) * mlx->line_size) + ((player_px + x) * (mlx->bpp / 8));
 			*(unsigned int *)(mlx->img_addr + offset) = 0xFF0000; // vermelho
 			x++;
 		}
@@ -61,9 +60,9 @@ static void	draw_player(t_mlx_data *mlx)
 
 static void	minimap(t_data *data, t_mlx_data *mlx)
 {
-	int	y;
-	int	x;
-	int	color;
+	int		y;
+	int		x;
+	int		color;
 	char	tile;
 
 	y = 0;
@@ -86,16 +85,16 @@ static void	minimap(t_data *data, t_mlx_data *mlx)
 	draw_player(mlx);
 }
 
-void redraw_minimap(t_data *data, t_mlx_data *mlx)
+void	redraw_minimap(t_data *data, t_mlx_data *mlx)
 {
 	ft_bzero(mlx->img_addr, H * mlx->line_size);
 	minimap(data, mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
 
-static int game_loop(t_game *game)
+static int	game_loop(t_game *game)
 {
-	game->mlx->pos_x = game->mlx->pos_x +0.05;
+	game->mlx->pos_x = game->mlx->pos_x +0.05;//HARDCODED MOVEMENT
 	update_player_position(game);
 	redraw_minimap(game->data, game->mlx);
 	return (0);
