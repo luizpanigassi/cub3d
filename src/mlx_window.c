@@ -3,34 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_window.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/24 13:07:20 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/24 15:32:18 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void draw_vision(t_mlx_data *mlx)
+static void draw_vision(t_mlx_data *mlx, int tile_size)
 {
-	int line_length = TILE_SIZE;
-	int start_x = (int)(mlx->pos_x * TILE_SIZE);
-	int start_y = (int)(mlx->pos_y * TILE_SIZE);
-	double dir_x = mlx->dir_x;
-	double dir_y = mlx->dir_y;
-	int end_x = (int)(start_x + dir_x * line_length);
-	int end_y = (int)(start_y + dir_y * line_length);
-
-	int dx = abs(end_x - start_x);
-	int dy = abs(end_y - start_y);
-	int sx = (start_x < end_x) ? 1 : -1;
-	int sy = (start_y < end_y) ? 1 : -1;
-	int err = dx - dy;
-	int x = start_x;
-	int y = start_y;
+	int line_length = tile_size * 2;
+	int start_x = (int)(mlx->pos_x * tile_size);
+	int start_y = (int)(mlx->pos_y * tile_size);
+	int end_x = (int)(start_x + mlx->dir_x * line_length);
+	int end_y = (int)(start_y + mlx->dir_y * line_length);
+	int dx = end_x - start_x;
+	int dy = end_y - start_y;
+	int sx = -1;
+	int sy = -1;
+	int err;
+	int e2;
+	int x;
+	int y;
 	int offset;
 
+	if (start_x < end_x)
+		sx = 1;
+	if (start_y < end_y)
+		sy = 1;
+	dx = (dx < 0) ? -dx : dx;
+	dy = (dy < 0) ? -dy : dy;
+	err = dx - dy;
+	x = start_x;
+	y = start_y;
 	while (1)
 	{
 		if (x >= 0 && x < W && y >= 0 && y < H)
@@ -39,8 +46,8 @@ static void draw_vision(t_mlx_data *mlx)
 			*(unsigned int *)(mlx->img_addr + offset) = 0x00FF00;
 		}
 		if (x == end_x && y == end_y)
-			break;
-		int e2 = 2 * err;
+			break ;
+		e2 = 2 * err;
 		if (e2 > -dy)
 		{
 			err -= dy;
@@ -54,19 +61,20 @@ static void draw_vision(t_mlx_data *mlx)
 	}
 }
 
-static void draw_square(t_mlx_data *mlx, int x, int y, int color)
+
+static void draw_square(t_mlx_data *mlx, int x, int y, int tile_size, int color)
 {
-	int dy;
 	int dx;
-	int offset;
+	int dy;
 	int px;
 	int py;
+	int offset;
 
 	dy = 0;
-	while (dy < TILE_SIZE)
+	while (dy < tile_size)
 	{
 		dx = 0;
-		while (dx < TILE_SIZE)
+		while (dx < tile_size)
 		{
 			px = x + dx;
 			py = y + dy;
@@ -81,24 +89,27 @@ static void draw_square(t_mlx_data *mlx, int x, int y, int color)
 	}
 }
 
-static void draw_player(t_mlx_data *mlx)
+static void draw_player(t_mlx_data *mlx, int tile_size)
 {
-	int player_px = (int)(mlx->pos_x * TILE_SIZE);
-	int player_py = (int)(mlx->pos_y * TILE_SIZE);
-	int y = -(TILE_SIZE / 3) / 2;
+	int center_x = (int)(mlx->pos_x * tile_size);
+	int center_y = (int)(mlx->pos_y * tile_size);
+	int half = tile_size / 4;
+	int y = -half;
 	int x;
-	int offset, px, py;
+	int px;
+	int py;
+	int offset;
 
-	while (y < (TILE_SIZE / 3) / 2)
+	while (y < half)
 	{
-		x = -(TILE_SIZE / 3) / 2;
-		while (x < (TILE_SIZE / 3) / 2)
+		x = -half;
+		while (x < half)
 		{
-			px = player_px + x;
-			py = player_py + y;
+			px = center_x + x;
+			py = center_y + y;
 			if (px >= 0 && px < W && py >= 0 && py < H)
 			{
-				offset = (py * mlx->line_size) + (px * (mlx->bpp / 8));
+				offset = py * mlx->line_size + px * (mlx->bpp / 8);
 				*(unsigned int *)(mlx->img_addr + offset) = 0xFF0000;
 			}
 			x++;
@@ -109,12 +120,22 @@ static void draw_player(t_mlx_data *mlx)
 
 static void minimap(t_data *data, t_mlx_data *mlx)
 {
-	int y;
-	int x;
-	int color;
-	char tile;
+	int tile_w = MINIMAP_MAX_W / data->map_width;
+	int tile_h = MINIMAP_MAX_H / data->map_height;
+	int tile_size;
 
-	y = 0;
+	if (tile_w < tile_h)
+		tile_size = tile_w;
+	else
+		tile_size = tile_h;
+	if (tile_size < 1)
+		tile_size = 1;
+
+	int y = 0;
+	int x;
+	char tile;
+	int color;
+
 	while (y < data->map_height)
 	{
 		x = 0;
@@ -126,14 +147,15 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 				color = 0xFFFFFF;
 			else if (tile == '0' || ft_strchr("NSEW", tile))
 				color = 0x808080;
-			draw_square(mlx, x * TILE_SIZE, y * TILE_SIZE, color);
+			draw_square(mlx, x * tile_size, y * tile_size, tile_size, color);
 			x++;
 		}
 		y++;
 	}
-	draw_player(mlx);
-	draw_vision(mlx);
+	draw_player(mlx, tile_size);
+	draw_vision(mlx, tile_size);
 }
+
 
 void redraw_minimap(t_data *data, t_mlx_data *mlx)
 {
