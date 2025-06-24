@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 18:09:50 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 20:15:10 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/24 17:35:02 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int	parse_texture(char *line, t_data *data, const char *id)
 		return (0);
 	if (access(path, R_OK))
 	{
+		fprintf(stderr, "Error: Cannot access texture file: %s\n", path);
 		free(path);
 		return (0);
 	}
@@ -100,7 +101,10 @@ int	parse_color_line(char *trimmed, t_data *data)
 	if (trimmed[0] == 'F' && ft_isspace(trimmed[1]))
 	{
 		if (!parse_color(trimmed + 2, data, 'F'))
+		{
+			fprintf(stderr, "Error: Invalid floor color format: \"%s\"\n", trimmed + 2);
 			error_exit("Invalid floor color!", data);
+		}
 		return (1);
 	}
 	else if (trimmed[0] == 'C' && ft_isspace(trimmed[1]))

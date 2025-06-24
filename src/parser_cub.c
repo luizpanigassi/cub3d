@@ -6,18 +6,19 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 16:35:19 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/24 16:56:26 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 17:32:55 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	parse_lines_loop(int fd, t_data *data,
-			t_list **map_lines, int *max_width)
+void parse_lines_loop(int fd, t_data *data,
+					  t_list **map_lines, int *max_width)
 {
-	char		*line;
-	int			map_started;
-	t_parse_ctx	ctx;
+	char *line;
+	int map_started;
+	t_parse_ctx ctx;
+	int line_num = 1;
 
 	map_started = 0;
 	ctx.data = data;
@@ -27,7 +28,8 @@ void	parse_lines_loop(int fd, t_data *data,
 	while (line)
 	{
 		char *nl = strchr(line, '\n');
-		if (nl) *nl = '\0';
+		if (nl)
+			*nl = '\0';
 
 		if (map_started)
 		{
@@ -40,6 +42,7 @@ void	parse_lines_loop(int fd, t_data *data,
 			{
 				free(line);
 				line = get_next_line(fd);
+				line_num++;
 				continue;
 			}
 			if (trimmed[0] == '\0')
@@ -47,6 +50,7 @@ void	parse_lines_loop(int fd, t_data *data,
 				free(trimmed);
 				free(line);
 				line = get_next_line(fd);
+				line_num++;
 				continue;
 			}
 			int res = handle_non_map_line(trimmed, data, map_lines, max_width);
@@ -61,28 +65,44 @@ void	parse_lines_loop(int fd, t_data *data,
 			}
 			else
 			{
+				fprintf(stderr, "Error\nUnrecognized line at %d: \"%s\"\n", line_num, line);
 				free(trimmed);
 				free(line);
-				error_exit("Unrecognized line in file", data);
+				error_exit("Parsing failed due to unrecognized line.", data);
 			}
 		}
 		line = get_next_line(fd);
+		line_num++;
 	}
 }
 
-void	check_required_elements(t_data *data)
+void check_required_elements(t_data *data)
 {
-	if (!data->north || !data->south || !data->east
-		||!data->west || data->floor == -1 || data->ceiling == -1)
+	if (!data->north || !data->south || !data->east || !data->west || data->floor == -1 || data->ceiling == -1)
+	{
+		fprintf(stderr, "Error\nMissing required map elements:\n");
+		if (!data->north)
+			fprintf(stderr, "- North texture (NO)\n");
+		if (!data->south)
+			fprintf(stderr, "- South texture (SO)\n");
+		if (!data->east)
+			fprintf(stderr, "- East texture (EA)\n");
+		if (!data->west)
+			fprintf(stderr, "- West texture (WE)\n");
+		if (data->floor == -1)
+			fprintf(stderr, "- Floor color (F)\n");
+		if (data->ceiling == -1)
+			fprintf(stderr, "- Ceiling color (C)\n");
 		error_exit("There's something missing in your map!", data);
+	}
 }
 
-t_data	*parse_cub_file(char *filename)
+t_data *parse_cub_file(char *filename)
 {
-	int		fd;
-	t_data	*data;
-	t_list	*map_lines;
-	int		max_width;
+	int fd;
+	t_data *data;
+	t_list *map_lines;
+	int max_width;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)

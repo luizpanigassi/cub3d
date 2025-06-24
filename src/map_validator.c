@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 18:50:08 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/19 20:01:44 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 17:35:34 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,10 @@ void	validate_map_char_at(t_data *data, int x, int y, int *player_count)
 
 	c = data->map[y][x];
 	if (!ft_strchr(MAP_CHARS, c))
+	{
+		fprintf(stderr, "Invalid character '%c' at (%d, %d)\n", c, x, y);
 		error_exit("Wait, your map has invalid characters!", data);
+	}
 	if (ft_strchr(PLAYER_CHARS, c))
 	{
 		(*player_count)++;

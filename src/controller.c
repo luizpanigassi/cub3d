@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:04:21 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/23 17:34:31 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 17:20:05 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,4 @@ void	try_movement(t_mlx_data *mlx, double dx, double dy)
 	if (is_walkable(mlx->data, mlx->pos_x, new_y + COLLISION_MARGIN) &&
 		is_walkable(mlx->data, mlx->pos_x, new_y - COLLISION_MARGIN))
 		mlx->pos_y = new_y;
-
 }
-

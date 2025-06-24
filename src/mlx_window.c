@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/24 15:32:18 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 18:59:24 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,11 +156,10 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 	draw_vision(mlx, tile_size);
 }
 
-
 void redraw_minimap(t_data *data, t_mlx_data *mlx)
 {
 	ft_bzero(mlx->img_addr, H * mlx->line_size);
-	draw_background(mlx, 0x0000FF, 0x00FF00);
+	draw_background(mlx, data->ceiling, data->floor);
 	minimap(data, mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }

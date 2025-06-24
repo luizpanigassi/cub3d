@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   flood_fill.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 19:49:42 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 20:15:43 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/24 17:35:21 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@ void	flood_fill(t_data *data, char **map, int x, int y)
 {
 	if (y < 0 || y >= data->map_height
 		|| x < 0 || x >= (int)ft_strlen(map[y]))
+	{
+		fprintf(stderr, "Flood fill escaped at (%d, %d)\n", x, y);
 		error_exit("Map leak: flood escaped the map!", data);
+	}
 	if (map[y][x] == '1' || map[y][x] == 'F')
 		return ;
 	if (map[y][x] == ' ')

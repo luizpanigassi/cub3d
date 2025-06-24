@@ -21,8 +21,8 @@ header
 # define D_KEY 100
 # define LEFT_KEY 65361
 # define RIGHT_KEY 65363
-# define MOVE_SPEED 0.1
-# define ROTATION_SPEED 0.05
+# define MOVE_SPEED 0.05
+# define ROTATION_SPEED 0.02
 # define COLLISION_MARGIN 0.1
 # define NUM_RAYS 1200
 
@@ -30,6 +30,8 @@ header
 # define W 1200
 # define H 800
 # define TILE_SIZE 40
+# define MINIMAP_MAX_W 300
+# define MINIMAP_MAX_H 300
 
 typedef struct s_data
 {
@@ -145,7 +147,7 @@ void	add_map_line(char *trimmed, t_list **map_lines, int *max_width);
 int		parse_texture_line(char *trimmed, t_data *data);
 int		handle_non_map_line(char *trimmed,
 			t_data *data, t_list **map_lines, int *max_width);
-void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width);
+void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width, t_data *data);
 
 // UTILS
 void	ft_free_array(char **array);
@@ -280,7 +282,6 @@ int	close_event(t_game *game)
 	exit(0);
 	return (0);
 }
-
 
 void	events(t_game *game)
 {
@@ -486,25 +487,32 @@ mlx_window.c
 
 #include "cub3d.h"
 
-static void draw_vision(t_mlx_data *mlx)
+static void draw_vision(t_mlx_data *mlx, int tile_size)
 {
-	int line_length = TILE_SIZE;
-	int start_x = (int)(mlx->pos_x * TILE_SIZE);
-	int start_y = (int)(mlx->pos_y * TILE_SIZE);
-	double dir_x = mlx->dir_x;
-	double dir_y = mlx->dir_y;
-	int end_x = (int)(start_x + dir_x * line_length);
-	int end_y = (int)(start_y + dir_y * line_length);
-
-	int dx = abs(end_x - start_x);
-	int dy = abs(end_y - start_y);
-	int sx = (start_x < end_x) ? 1 : -1;
-	int sy = (start_y < end_y) ? 1 : -1;
-	int err = dx - dy;
-	int x = start_x;
-	int y = start_y;
+	int line_length = tile_size * 2;
+	int start_x = (int)(mlx->pos_x * tile_size);
+	int start_y = (int)(mlx->pos_y * tile_size);
+	int end_x = (int)(start_x + mlx->dir_x * line_length);
+	int end_y = (int)(start_y + mlx->dir_y * line_length);
+	int dx = end_x - start_x;
+	int dy = end_y - start_y;
+	int sx = -1;
+	int sy = -1;
+	int err;
+	int e2;
+	int x;
+	int y;
 	int offset;
 
+	if (start_x < end_x)
+		sx = 1;
+	if (start_y < end_y)
+		sy = 1;
+	dx = (dx < 0) ? -dx : dx;
+	dy = (dy < 0) ? -dy : dy;
+	err = dx - dy;
+	x = start_x;
+	y = start_y;
 	while (1)
 	{
 		if (x >= 0 && x < W && y >= 0 && y < H)
@@ -513,8 +521,8 @@ static void draw_vision(t_mlx_data *mlx)
 			*(unsigned int *)(mlx->img_addr + offset) = 0x00FF00;
 		}
 		if (x == end_x && y == end_y)
-			break;
-		int e2 = 2 * err;
+			break ;
+		e2 = 2 * err;
 		if (e2 > -dy)
 		{
 			err -= dy;
@@ -528,19 +536,20 @@ static void draw_vision(t_mlx_data *mlx)
 	}
 }
 
-static void draw_square(t_mlx_data *mlx, int x, int y, int color)
+
+static void draw_square(t_mlx_data *mlx, int x, int y, int tile_size, int color)
 {
-	int dy;
 	int dx;
-	int offset;
+	int dy;
 	int px;
 	int py;
+	int offset;
 
 	dy = 0;
-	while (dy < TILE_SIZE)
+	while (dy < tile_size)
 	{
 		dx = 0;
-		while (dx < TILE_SIZE)
+		while (dx < tile_size)
 		{
 			px = x + dx;
 			py = y + dy;
@@ -555,24 +564,27 @@ static void draw_square(t_mlx_data *mlx, int x, int y, int color)
 	}
 }
 
-static void draw_player(t_mlx_data *mlx)
+static void draw_player(t_mlx_data *mlx, int tile_size)
 {
-	int player_px = (int)(mlx->pos_x * TILE_SIZE);
-	int player_py = (int)(mlx->pos_y * TILE_SIZE);
-	int y = -(TILE_SIZE / 3) / 2;
+	int center_x = (int)(mlx->pos_x * tile_size);
+	int center_y = (int)(mlx->pos_y * tile_size);
+	int half = tile_size / 4;
+	int y = -half;
 	int x;
-	int offset, px, py;
+	int px;
+	int py;
+	int offset;
 
-	while (y < (TILE_SIZE / 3) / 2)
+	while (y < half)
 	{
-		x = -(TILE_SIZE / 3) / 2;
-		while (x < (TILE_SIZE / 3) / 2)
+		x = -half;
+		while (x < half)
 		{
-			px = player_px + x;
-			py = player_py + y;
+			px = center_x + x;
+			py = center_y + y;
 			if (px >= 0 && px < W && py >= 0 && py < H)
 			{
-				offset = (py * mlx->line_size) + (px * (mlx->bpp / 8));
+				offset = py * mlx->line_size + px * (mlx->bpp / 8);
 				*(unsigned int *)(mlx->img_addr + offset) = 0xFF0000;
 			}
 			x++;
@@ -583,12 +595,22 @@ static void draw_player(t_mlx_data *mlx)
 
 static void minimap(t_data *data, t_mlx_data *mlx)
 {
-	int y;
-	int x;
-	int color;
-	char tile;
+	int tile_w = MINIMAP_MAX_W / data->map_width;
+	int tile_h = MINIMAP_MAX_H / data->map_height;
+	int tile_size;
 
-	y = 0;
+	if (tile_w < tile_h)
+		tile_size = tile_w;
+	else
+		tile_size = tile_h;
+	if (tile_size < 1)
+		tile_size = 1;
+
+	int y = 0;
+	int x;
+	char tile;
+	int color;
+
 	while (y < data->map_height)
 	{
 		x = 0;
@@ -600,14 +622,15 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 				color = 0xFFFFFF;
 			else if (tile == '0' || ft_strchr("NSEW", tile))
 				color = 0x808080;
-			draw_square(mlx, x * TILE_SIZE, y * TILE_SIZE, color);
+			draw_square(mlx, x * tile_size, y * tile_size, tile_size, color);
 			x++;
 		}
 		y++;
 	}
-	draw_player(mlx);
-	draw_vision(mlx);
+	draw_player(mlx, tile_size);
+	draw_vision(mlx, tile_size);
 }
+
 
 void redraw_minimap(t_data *data, t_mlx_data *mlx)
 {
@@ -763,10 +786,9 @@ parser_cub.c
 #include "cub3d.h"
 
 void	parse_lines_loop(int fd, t_data *data,
-	t_list **map_lines, int *max_width)
+			t_list **map_lines, int *max_width)
 {
 	char		*line;
-	char		*trimmed;
 	int			map_started;
 	t_parse_ctx	ctx;
 
@@ -777,13 +799,46 @@ void	parse_lines_loop(int fd, t_data *data,
 	line = get_next_line(fd);
 	while (line)
 	{
-		trimmed = trim_and_free_line(line);
-		if (!trimmed)
+		char *nl = strchr(line, '\n');
+		if (nl) *nl = '\0';
+
+		if (map_started)
 		{
-			line = get_next_line(fd);
-			continue ;
+			handle_map_line(line, map_lines, max_width, data);
 		}
-		process_trimmed_line(trimmed, &map_started, &ctx);
+		else
+		{
+			char *trimmed = trim_and_free_line(ft_strdup(line));
+			if (!trimmed)
+			{
+				free(line);
+				line = get_next_line(fd);
+				continue;
+			}
+			if (trimmed[0] == '\0')
+			{
+				free(trimmed);
+				free(line);
+				line = get_next_line(fd);
+				continue;
+			}
+			int res = handle_non_map_line(trimmed, data, map_lines, max_width);
+			if (res == 1)
+			{
+				free(line);
+			}
+			else if (res == 2)
+			{
+				map_started = 1;
+				handle_map_line(line, map_lines, max_width, data);
+			}
+			else
+			{
+				free(trimmed);
+				free(line);
+				error_exit("Unrecognized line in file", data);
+			}
+		}
 		line = get_next_line(fd);
 	}
 }
@@ -962,7 +1017,7 @@ void	process_trimmed_line(char *trimmed, int *map_started, t_parse_ctx *ctx)
 	}
 	else
 	{
-		handle_map_line(trimmed, ctx->map_lines, ctx->max_width);
+		handle_map_line(trimmed, ctx->map_lines, ctx->max_width, ctx->data);
 	}
 }
 
@@ -1007,11 +1062,9 @@ int	parse_texture_line(char *trimmed, t_data *data)
 int	handle_non_map_line(char *trimmed,
 	t_data *data, t_list **map_lines, int *max_width)
 {
-	if (!*trimmed)
-	{
-		free(trimmed);
-		return (1);
-	}
+	(void)map_lines;
+	(void)max_width;
+
 	if (parse_texture_line(trimmed, data))
 	{
 		free(trimmed);
@@ -1022,18 +1075,17 @@ int	handle_non_map_line(char *trimmed,
 		free(trimmed);
 		return (1);
 	}
-	else if (ft_strchr(MAP_CHARS, *trimmed))
+	else
 	{
-		add_map_line(trimmed, map_lines, max_width);
+		free(trimmed);
 		return (2);
 	}
-	printf("Line not parsed: '%s'\n", trimmed);
-	free(trimmed);
-	return (0);
 }
 
-void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width)
+void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width, t_data *data)
 {
+	if (trimmed[0] == '\0')
+		error_exit("Empty line in map", data);
 	add_map_line(trimmed, map_lines, max_width);
 }
 

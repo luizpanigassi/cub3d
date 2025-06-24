@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/24 16:53:52 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 18:50:16 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@
 # define D_KEY 100
 # define LEFT_KEY 65361
 # define RIGHT_KEY 65363
-# define MOVE_SPEED 0.1
-# define ROTATION_SPEED 0.05
+# define MOVE_SPEED 0.05
+# define ROTATION_SPEED 0.02
 # define COLLISION_MARGIN 0.1
 # define NUM_RAYS 1200
 
@@ -113,6 +113,7 @@ int		error_exit(char *msg, t_data *data);
 // EVENTS
 int		close_event(t_game *game);
 void	events(t_game *game);
+int mouse_move(int x, int y, t_game *game);
 
 // FLOOD FILL
 char	**dup_map(t_data *data);
