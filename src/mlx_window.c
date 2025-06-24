@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_window.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/23 17:58:50 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/24 13:07:20 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void draw_line(t_mlx_data *mlx)
+static void draw_vision(t_mlx_data *mlx)
 {
 	int line_length = TILE_SIZE;
 	int start_x = (int)(mlx->pos_x * TILE_SIZE);
@@ -132,12 +132,13 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 		y++;
 	}
 	draw_player(mlx);
-	draw_line(mlx);
+	draw_vision(mlx);
 }
 
 void redraw_minimap(t_data *data, t_mlx_data *mlx)
 {
 	ft_bzero(mlx->img_addr, H * mlx->line_size);
+	draw_background(mlx, 0x0000FF, 0x00FF00);
 	minimap(data, mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
@@ -145,7 +146,6 @@ void redraw_minimap(t_data *data, t_mlx_data *mlx)
 static int game_loop(t_game *game)
 {
 	update_player_position(game);
-	//draw_vision(game);
 	redraw_minimap(game->data, game->mlx);
 	return (0);
 }

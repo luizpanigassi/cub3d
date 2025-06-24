@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/23 17:55:48 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/24 13:01:13 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,5 +172,10 @@ void	redraw_minimap(t_data *data, t_mlx_data *mlx);
 //INIT
 void	init_window(t_mlx_data *mlx);
 void	init_player(t_game *game);
+
+//DRAWING UTILS
+void draw_pixel(t_mlx_data *mlx, int x, int y, int color);
+void draw_h_line(t_mlx_data *mlx, int y, int color);
+void draw_background(t_mlx_data *mlx, int sky, int ground);
 
 #endif
