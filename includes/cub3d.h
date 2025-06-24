@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/24 15:29:34 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 16:53:52 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ void	add_map_line(char *trimmed, t_list **map_lines, int *max_width);
 int		parse_texture_line(char *trimmed, t_data *data);
 int		handle_non_map_line(char *trimmed,
 			t_data *data, t_list **map_lines, int *max_width);
-void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width);
+void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width, t_data *data);
 
 // UTILS
 void	ft_free_array(char **array);

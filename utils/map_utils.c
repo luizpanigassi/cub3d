@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:42:35 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/23 17:34:09 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 16:56:19 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,9 @@ int	parse_texture_line(char *trimmed, t_data *data)
 int	handle_non_map_line(char *trimmed,
 	t_data *data, t_list **map_lines, int *max_width)
 {
-	if (!*trimmed)
-	{
-		free(trimmed);
-		return (1);
-	}
+	(void)map_lines;
+	(void)max_width;
+
 	if (parse_texture_line(trimmed, data))
 	{
 		free(trimmed);
@@ -43,17 +41,16 @@ int	handle_non_map_line(char *trimmed,
 		free(trimmed);
 		return (1);
 	}
-	else if (ft_strchr(MAP_CHARS, *trimmed))
+	else
 	{
-		add_map_line(trimmed, map_lines, max_width);
+		free(trimmed);
 		return (2);
 	}
-	printf("Line not parsed: '%s'\n", trimmed);
-	free(trimmed);
-	return (0);
 }
 
-void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width)
+void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width, t_data *data)
 {
+	if (trimmed[0] == '\0')
+		error_exit("Empty line in map", data);
 	add_map_line(trimmed, map_lines, max_width);
 }

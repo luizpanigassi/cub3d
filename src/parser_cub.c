@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   parser_cub.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 16:35:19 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 20:14:40 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/24 16:56:26 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
 void	parse_lines_loop(int fd, t_data *data,
-	t_list **map_lines, int *max_width)
+			t_list **map_lines, int *max_width)
 {
 	char		*line;
-	char		*trimmed;
 	int			map_started;
 	t_parse_ctx	ctx;
 
@@ -27,13 +26,46 @@ void	parse_lines_loop(int fd, t_data *data,
 	line = get_next_line(fd);
 	while (line)
 	{
-		trimmed = trim_and_free_line(line);
-		if (!trimmed)
+		char *nl = strchr(line, '\n');
+		if (nl) *nl = '\0';
+
+		if (map_started)
 		{
-			line = get_next_line(fd);
-			continue ;
+			handle_map_line(line, map_lines, max_width, data);
 		}
-		process_trimmed_line(trimmed, &map_started, &ctx);
+		else
+		{
+			char *trimmed = trim_and_free_line(ft_strdup(line));
+			if (!trimmed)
+			{
+				free(line);
+				line = get_next_line(fd);
+				continue;
+			}
+			if (trimmed[0] == '\0')
+			{
+				free(trimmed);
+				free(line);
+				line = get_next_line(fd);
+				continue;
+			}
+			int res = handle_non_map_line(trimmed, data, map_lines, max_width);
+			if (res == 1)
+			{
+				free(line);
+			}
+			else if (res == 2)
+			{
+				map_started = 1;
+				handle_map_line(line, map_lines, max_width, data);
+			}
+			else
+			{
+				free(trimmed);
+				free(line);
+				error_exit("Unrecognized line in file", data);
+			}
+		}
 		line = get_next_line(fd);
 	}
 }

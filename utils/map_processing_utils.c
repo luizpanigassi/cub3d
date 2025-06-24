@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:47:09 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/19 19:09:15 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 16:55:41 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	process_trimmed_line(char *trimmed, int *map_started, t_parse_ctx *ctx)
 	}
 	else
 	{
-		handle_map_line(trimmed, ctx->map_lines, ctx->max_width);
+		handle_map_line(trimmed, ctx->map_lines, ctx->max_width, ctx->data);
 	}
 }
 
