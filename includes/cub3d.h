@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/24 18:50:16 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 19:25:34 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,5 +180,8 @@ void	init_player(t_game *game);
 void draw_pixel(t_mlx_data *mlx, int x, int y, int color);
 void draw_h_line(t_mlx_data *mlx, int y, int color);
 void draw_background(t_mlx_data *mlx, int sky, int ground);
+
+//RAY
+void	render_view(t_game *game);
 
 #endif

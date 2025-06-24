@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_window.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/24 18:59:24 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 19:48:35 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,18 +156,14 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 	draw_vision(mlx, tile_size);
 }
 
-void redraw_minimap(t_data *data, t_mlx_data *mlx)
-{
-	ft_bzero(mlx->img_addr, H * mlx->line_size);
-	draw_background(mlx, data->ceiling, data->floor);
-	minimap(data, mlx);
-	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
-}
-
 static int game_loop(t_game *game)
 {
 	update_player_position(game);
-	redraw_minimap(game->data, game->mlx);
+	ft_bzero(game->mlx->img_addr, H * game->mlx->line_size);
+	draw_background(game->mlx, game->data->ceiling, game->data->floor);
+	render_view(game);
+	minimap(game->data, game->mlx);
+	mlx_put_image_to_window(game->mlx->mlx, game->mlx->win, game->mlx->img, 0, 0);
 	return (0);
 }
 
