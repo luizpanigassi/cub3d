@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:45:31 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/24 18:55:14 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/24 20:28:56 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void events(t_game *game)
 	mlx_hook(game->mlx->win, 2, 1L << 0, key_press, game);
 	mlx_hook(game->mlx->win, 3, 1L << 1, key_release, game);
 	mlx_hook(game->mlx->win, 17, 0, close_event, game);
-	mlx_hook(game->mlx->win, 6, 1L << 6, mouse_move, game); // Mouse move event
+	mlx_hook(game->mlx->win, 6, 1L << 6, mouse_move, game);
 }
 
 int mouse_move(int x, int y, t_game *game)
