@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_cub.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 16:35:19 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/24 17:32:55 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/25 12:14:00 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@ void parse_lines_loop(int fd, t_data *data,
 {
 	char *line;
 	int map_started;
-	t_parse_ctx ctx;
+	//t_parse_ctx ctx;
 	int line_num = 1;
 
 	map_started = 0;
-	ctx.data = data;
-	ctx.map_lines = map_lines;
-	ctx.max_width = max_width;
+	//ctx.data = data;
+	//ctx.map_lines = map_lines;
+	//ctx.max_width = max_width;
 	line = get_next_line(fd);
 	while (line)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray_cast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 18:15:33 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/24 20:08:15 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/25 12:14:43 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ static double	ray_distance(t_game *game, int x)
 		return (side_dist_y - delta_y);
 }
 
-void draw_wall(t_mlx_data *mlx, int x, int dist)
+void draw_wall(t_mlx_data *mlx, int x, double dist)
 {
 	int line_height;
 	int draw_start;
@@ -128,7 +128,7 @@ void draw_wall(t_mlx_data *mlx, int x, int dist)
 void	render_view(t_game *game)
 {
 	int	x;
-	int	dist;
+	double	dist;
 
 	x = 0;
 	while(x < W)
