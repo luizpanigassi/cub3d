@@ -6,7 +6,7 @@
 /*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 18:15:33 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/25 12:14:43 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/25 12:52:37 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,12 @@ void draw_wall(t_mlx_data *mlx, int x, double dist)
 	y = draw_start;
 	while (y < draw_end)
 	{
-		draw_pixel(mlx, x, y, 0xFFFFFF);
+		// Calculate shade: closer = brighter, farther = darker
+		double shade = 1.0 / (1.0 + dist * 0.1);
+		if (shade < 0.2)
+			shade = 0.2;
+		int color = ((int)(255 * shade) << 16) | ((int)(255 * shade) << 8) | (int)(255 * shade);
+		draw_pixel(mlx, x, y, color);
 		y++;
 	}
 }
