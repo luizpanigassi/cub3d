@@ -6,7 +6,7 @@
 #    By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/17 18:10:20 by luinasci          #+#    #+#              #
-#    Updated: 2025/06/25 17:00:59 by luinasci         ###   ########.fr        #
+#    Updated: 2025/06/25 17:35:26 by luinasci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -86,14 +86,15 @@ $(MLX_LIB):
 # Cleanup
 clean:
 	@echo "$(RED)🧹 Cleaning objects$(RESET)"
-	$(RM) $(OBJS)
-	@make -C $(LIBFT_DIR) clean
+	@find $(OBJ_DIR) -type f -name '*.o' -delete
+	@$(RM) $(TERMINAL_TEST_OBJS) $(TERMINAL_EXTRA_OBJS) $(TERMINAL_TEST_NAME)
+	@$(MAKE) -C $(LIBFT_DIR) clean --silent
 
 fclean: clean
 	@echo "$(RED)🔥 Full clean$(RESET)"
-	$(RM) $(NAME)
-	@make -C $(LIBFT_DIR) fclean || true
-	$(RM) $(MLX_LIB)
+	@$(RM) $(NAME)
+	@$(MAKE) -C $(LIBFT_DIR) fclean --silent
+	@$(RM) $(MLX_LIB)
 
 re: fclean all
 

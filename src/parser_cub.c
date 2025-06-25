@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 16:35:19 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/25 16:46:00 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/25 18:22:29 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,18 @@ void parse_lines_loop(int fd, t_data *data,
 
 		if (map_started)
 		{
+			// Ignore trailing blank lines after the map
+			char *trimmed = trim_and_free_line(ft_strdup(line));
+			if (!trimmed || trimmed[0] == '\0')
+			{
+				free(trimmed);
+				free(line);
+				line = get_next_line(fd);
+				line_num++;
+				continue;
+			}
 			handle_map_line(line, map_lines, max_width, data);
+			free(trimmed);
 		}
 		else
 		{
