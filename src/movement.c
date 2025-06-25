@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:20:47 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/23 17:33:57 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/25 16:42:35 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ int key_press(int keycode, t_game *game)
 	else if (keycode == RIGHT_KEY)
 	{
 		game->keys.right = 1;
+	}
+	else if (keycode == E_KEY)
+	{
+		toggle_door(game);
 	}
 	else if (keycode == ESC_KEY)
 	{

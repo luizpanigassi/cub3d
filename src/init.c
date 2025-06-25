@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 08:10:39 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/25 15:52:55 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/25 16:52:17 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,17 @@ void	init_textures(t_game *game)
 	mlx->textures[1] = load_xpm(mlx->mlx, game->data->south);
 	mlx->textures[2] = load_xpm(mlx->mlx, game->data->east);
 	mlx->textures[3] = load_xpm(mlx->mlx, game->data->west);
+	mlx->textures[4] = load_xpm(mlx->mlx, "textures/door.xpm");
 
 	if (!mlx->textures[0] || !mlx->textures[1]
-		|| !mlx->textures[2] || !mlx->textures[3])
+		|| !mlx->textures[2] || !mlx->textures[3] || !mlx->textures[4])
 	{
 		fprintf(stderr, "Error: Failed to load one or more textures:\n");
 		if (!mlx->textures[0]) fprintf(stderr, "- North texture: %s\n", game->data->north);
 		if (!mlx->textures[1]) fprintf(stderr, "- South texture: %s\n", game->data->south);
 		if (!mlx->textures[2]) fprintf(stderr, "- East texture: %s\n", game->data->east);
 		if (!mlx->textures[3]) fprintf(stderr, "- West texture: %s\n", game->data->west);
+		if (!mlx->textures[4]) fprintf(stderr, "- Door texture: textures/door.xpm\n");
 		error_exit("Texture loading failed!", game->data);
 	}
 }

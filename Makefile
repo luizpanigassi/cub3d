@@ -6,7 +6,7 @@
 #    By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/17 18:10:20 by luinasci          #+#    #+#              #
-#    Updated: 2025/06/25 15:50:59 by luinasci         ###   ########.fr        #
+#    Updated: 2025/06/25 17:00:59 by luinasci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ SRCS = \
 	$(SRC_DIR)/ray_cast.c \
 	$(SRC_DIR)/drawing_utils.c \
 	$(SRC_DIR)/texture_loader.c \
+	$(SRC_DIR)/door.c \
 	$(UTILS_DIR)/map_processing_utils.c \
 	$(UTILS_DIR)/map_utils.c \
 	$(UTILS_DIR)/utils.c \

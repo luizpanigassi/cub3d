@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/25 15:53:22 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:04:34 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,21 @@
 # include "../mlx/mlx.h"
 # include <math.h>
 
-# define MAP_CHARS " 01NSEW"
+# define MAP_CHARS " 01NSEWD"
 # define PLAYER_CHARS "NSEW"
 # define ESC_KEY 65307
 # define W_KEY 119
 # define A_KEY 97
 # define S_KEY 115
 # define D_KEY 100
+# define E_KEY 101
 # define LEFT_KEY 65361
 # define RIGHT_KEY 65363
 # define MOVE_SPEED 0.05
 # define ROTATION_SPEED 0.02
 # define COLLISION_MARGIN 0.1
 # define NUM_RAYS 1200
+# define MAX_DOORS 128
 
 //WINDOW SIZE
 # define W 1200
@@ -42,6 +44,12 @@
 # define TILE_SIZE 40
 # define MINIMAP_MAX_W 300
 # define MINIMAP_MAX_H 300
+
+typedef struct s_door {
+	int	x;
+	int	y;
+	int	is_open;
+}	t_door;
 
 typedef struct s_data
 {
@@ -57,6 +65,8 @@ typedef struct s_data
 	int		map_height;
 	int		player_x;
 	int		player_y;
+	t_door	doors[MAX_DOORS];
+	int		door_count;
 }	t_data;
 
 typedef struct s_keys
@@ -91,7 +101,7 @@ typedef struct mlx_data
 	char	*img_addr;
 	t_data	*data;
 	t_keys	*keys;
-	t_img	*textures[4];
+	t_img	*textures[5];
 	double	pos_x;
 	double	pos_y;
 	double	dir_x;
@@ -127,13 +137,20 @@ typedef struct s_ray_hit {
 void	try_movement(t_mlx_data *mlx, double dx, double dy);
 int		is_walkable(t_data *data, double x, double y);
 
+// DOOR
+void	toggle_door(t_game *game);
+t_door	*get_door(t_data *data, int x, int y);
+int		is_door_open(t_data *data, int x, int y);
+void	register_doors(t_data *data);
+int		is_door_at(t_data *data, int x, int y);
+
 // ERROR HANDLER
 int		error_exit(char *msg, t_data *data);
 
 // EVENTS
 int		close_event(t_game *game);
 void	events(t_game *game);
-int mouse_move(int x, int y, t_game *game);
+int		mouse_move(int x, int y, t_game *game);
 
 // FLOOD FILL
 char	**dup_map(t_data *data);

@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/25 16:04:50 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:00:04 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,21 +131,24 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 		tile_size = 1;
 
 	int y = 0;
-	int x;
-	char tile;
-	int color;
-
 	while (y < data->map_height)
 	{
-		x = 0;
-		while (data->map[y][x])
+		int x = 0;
+		while (x < data->map_width)
 		{
-			tile = data->map[y][x];
-			color = 0x000000;
+			char tile = data->map[y][x];
+			int color = 0x000000;
 			if (tile == '1')
 				color = 0xFFFFFF;
 			else if (tile == '0' || ft_strchr("NSEW", tile))
 				color = 0x808080;
+			else if (tile == 'D')
+			{
+				if (is_door_open(data, x, y))
+					color = 0x00FF00; // open door: green
+				else
+					color = 0xFF0000; // closed door: red
+			}
 			draw_square(mlx, x * tile_size, y * tile_size, tile_size, color);
 			x++;
 		}

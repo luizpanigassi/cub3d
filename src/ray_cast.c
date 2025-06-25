@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 18:15:33 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/25 15:49:00 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:07:19 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static double *ray_direction(t_game *game, int x)
 t_ray_hit ray_distance(t_game *game, int x)
 {
 	t_ray_hit hit;
+	hit.tex_id = -1;
 	double *dir = ray_direction(game, x);
 	if (!dir)
 		return ((t_ray_hit){-1, 0, 0, 0, 0, 0});
@@ -83,6 +84,11 @@ t_ray_hit ray_distance(t_game *game, int x)
 		}
 		if (game->data->map[map_y][map_x] == '1')
 			hit_wall = 1;
+		else if (game->data->map[map_y][map_x] == 'D' && !is_door_open(game->data, map_x, map_y))
+		{
+			hit_wall = 1;
+			hit.tex_id = 4; //porta
+		}
 	}
 
 	// Wall distance
@@ -92,10 +98,13 @@ t_ray_hit ray_distance(t_game *game, int x)
 		hit.dist = side_dist_y - delta_y;
 
 	// Wall orientation (texture ID)
-	if (hit.side == 0)
-		hit.tex_id = (dir[0] > 0) ? 3 : 2; // west : east
-	else
-		hit.tex_id = (dir[1] > 0) ? 0 : 1; // north : south
+	if (hit.tex_id != 4) // If not a door
+	{
+		if (hit.side == 0)
+			hit.tex_id = (dir[0] > 0) ? 3 : 2; // west : east
+		else
+			hit.tex_id = (dir[1] > 0) ? 0 : 1; // north : south
+	}
 
 	// Wall X position for texture mapping
 	if (hit.side == 0)
@@ -151,4 +160,3 @@ void render_view(t_game *game)
 		x++;
 	}
 }
-

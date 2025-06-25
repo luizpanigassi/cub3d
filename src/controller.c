@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:04:21 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/24 17:20:05 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/25 16:43:09 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ int	is_walkable(t_data *data, double x, double y)
 		|| map_x < 0 || map_x >= data->map_width)
 		return (0);
 	if (data->map[map_y][map_x] == '1')
+		return (0);
+	if (data->map[map_y][map_x] == 'D' && !is_door_open(data, map_x, map_y))
 		return (0);
 	return (1);
 }

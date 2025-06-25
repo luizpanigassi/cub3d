@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_cub.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 16:35:19 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/25 12:14:00 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/25 16:46:00 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ t_data *parse_cub_file(char *filename)
 	close(fd);
 	check_required_elements(data);
 	allocate_and_fill_map(data, map_lines, max_width);
+	register_doors(data);
 	ft_lstclear(&map_lines, free);
 	validate_map_chars(data);
 	validate_map_with_flood_fill(data);
