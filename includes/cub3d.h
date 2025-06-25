@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/24 19:25:34 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/25 15:53:22 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,16 @@ typedef struct s_keys
 	int	esc;
 }	t_keys;
 
+typedef struct s_img {
+	void	*img;
+	char	*addr;
+	int		bpp;
+	int		line_len;
+	int		endian;
+	int		w;
+	int		h;
+}	t_img;
+
 typedef struct mlx_data
 {
 	void	*mlx;
@@ -81,6 +91,7 @@ typedef struct mlx_data
 	char	*img_addr;
 	t_data	*data;
 	t_keys	*keys;
+	t_img	*textures[4];
 	double	pos_x;
 	double	pos_y;
 	double	dir_x;
@@ -102,6 +113,15 @@ typedef struct s_game
 	t_mlx_data	*mlx;
 	t_keys		keys;
 }	t_game;
+
+typedef struct s_ray_hit {
+	double	dist;
+	int		tex_id;
+	double	wall_x;
+	int		side;
+	double	dir_x;
+	double	dir_y;
+}	t_ray_hit;
 
 // CONTROLLER
 void	try_movement(t_mlx_data *mlx, double dx, double dy);
@@ -168,20 +188,24 @@ int		ft_strcmp(const char *s1, const char *s2);
 char	*trim_and_free_line(char *line);
 int		ft_isspace(int c);
 
-//MLX_WINDOW
+// MLX_WINDOW
 void	render_image(t_data *data);
 void	redraw_minimap(t_data *data, t_mlx_data *mlx);
 
-//INIT
+// INIT
 void	init_window(t_mlx_data *mlx);
 void	init_player(t_game *game);
+void	init_textures(t_game *game);
 
-//DRAWING UTILS
+// DRAWING UTILS
 void draw_pixel(t_mlx_data *mlx, int x, int y, int color);
 void draw_h_line(t_mlx_data *mlx, int y, int color);
 void draw_background(t_mlx_data *mlx, int sky, int ground);
 
-//RAY
+// RAY
 void	render_view(t_game *game);
+
+// TEXTURE LOADER
+t_img *load_xpm(void *mlx, char *path);
 
 #endif

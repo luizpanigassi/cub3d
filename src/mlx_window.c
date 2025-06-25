@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_window.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/24 19:48:35 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/25 16:04:50 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void draw_vision(t_mlx_data *mlx, int tile_size)
 			*(unsigned int *)(mlx->img_addr + offset) = 0x00FF00;
 		}
 		if (x == end_x && y == end_y)
-			break ;
+			break;
 		e2 = 2 * err;
 		if (e2 > -dy)
 		{
@@ -60,7 +60,6 @@ static void draw_vision(t_mlx_data *mlx, int tile_size)
 		}
 	}
 }
-
 
 static void draw_square(t_mlx_data *mlx, int x, int y, int tile_size, int color)
 {
@@ -169,18 +168,22 @@ static int game_loop(t_game *game)
 
 void render_image(t_data *data)
 {
-	t_mlx_data *mlx;
-	t_game *game;
+	t_mlx_data *mlx = malloc(sizeof(t_mlx_data));
+	t_game *game = malloc(sizeof(t_game));
 
-	mlx = malloc(sizeof(t_mlx_data));
-	game = malloc(sizeof(t_game));
+	if (!mlx || !game)
+		error_exit("Malloc failed", NULL);
 	game->data = data;
 	game->mlx = mlx;
 	mlx->data = data;
 	mlx->keys = &game->keys;
+	mlx->mlx = mlx_init();
+	if (!mlx->mlx)
+		error_exit("MLX init failed", NULL);
 	init_window(mlx);
+	init_textures(game);
 	init_player(game);
-	//redraw_minimap(data, mlx);
+	// redraw_minimap(data, mlx);
 	events(game);
 	mlx_loop_hook(mlx->mlx, game_loop, game);
 	mlx_loop(mlx->mlx);

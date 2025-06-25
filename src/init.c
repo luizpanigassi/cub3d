@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 08:10:39 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/24 19:47:43 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/25 15:52:55 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,25 @@ void	init_player(t_game *game)
 	game->mlx->pos_x = game->data->player_x + 0.5;
 	game->mlx->pos_y = game->data->player_y + 0.5;
 	setup_orientation(game->mlx, game->data->player_direction);
+}
+
+void	init_textures(t_game *game)
+{
+	t_mlx_data	*mlx = game->mlx;
+
+	mlx->textures[0] = load_xpm(mlx->mlx, game->data->north);
+	mlx->textures[1] = load_xpm(mlx->mlx, game->data->south);
+	mlx->textures[2] = load_xpm(mlx->mlx, game->data->east);
+	mlx->textures[3] = load_xpm(mlx->mlx, game->data->west);
+
+	if (!mlx->textures[0] || !mlx->textures[1]
+		|| !mlx->textures[2] || !mlx->textures[3])
+	{
+		fprintf(stderr, "Error: Failed to load one or more textures:\n");
+		if (!mlx->textures[0]) fprintf(stderr, "- North texture: %s\n", game->data->north);
+		if (!mlx->textures[1]) fprintf(stderr, "- South texture: %s\n", game->data->south);
+		if (!mlx->textures[2]) fprintf(stderr, "- East texture: %s\n", game->data->east);
+		if (!mlx->textures[3]) fprintf(stderr, "- West texture: %s\n", game->data->west);
+		error_exit("Texture loading failed!", game->data);
+	}
 }

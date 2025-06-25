@@ -103,6 +103,7 @@ int		error_exit(char *msg, t_data *data);
 // EVENTS
 int		close_event(t_game *game);
 void	events(t_game *game);
+int mouse_move(int x, int y, t_game *game);
 
 // FLOOD FILL
 char	**dup_map(t_data *data);
@@ -170,6 +171,9 @@ void draw_pixel(t_mlx_data *mlx, int x, int y, int color);
 void draw_h_line(t_mlx_data *mlx, int y, int color);
 void draw_background(t_mlx_data *mlx, int sky, int ground);
 
+//RAY
+void	render_view(t_game *game);
+
 #endif
 
 controller.c
@@ -202,7 +206,6 @@ void	try_movement(t_mlx_data *mlx, double dx, double dy)
 	if (is_walkable(mlx->data, mlx->pos_x, new_y + COLLISION_MARGIN) &&
 		is_walkable(mlx->data, mlx->pos_x, new_y - COLLISION_MARGIN))
 		mlx->pos_y = new_y;
-
 }
 
 drawing_utils.c
@@ -263,7 +266,7 @@ events.c
 
 #include "cub3d.h"
 
-int	close_event(t_game *game)
+int close_event(t_game *game)
 {
 	t_mlx_data *mlx = game->mlx;
 
@@ -283,11 +286,44 @@ int	close_event(t_game *game)
 	return (0);
 }
 
-void	events(t_game *game)
+void events(t_game *game)
 {
 	mlx_hook(game->mlx->win, 2, 1L << 0, key_press, game);
 	mlx_hook(game->mlx->win, 3, 1L << 1, key_release, game);
 	mlx_hook(game->mlx->win, 17, 0, close_event, game);
+	mlx_hook(game->mlx->win, 6, 1L << 6, mouse_move, game);
+}
+
+int mouse_move(int x, int y, t_game *game)
+{
+	static int last_x = -1;
+	int center_x = W / 2;
+	int center_y = H / 2;
+	double angle;
+
+	if (!game || !game->mlx || !game->mlx->mlx || !game->mlx->win)
+		return (0);
+	if (x == center_x && y == center_y)
+	{
+		last_x = center_x;
+		return (0);
+	}
+	if (last_x == -1)
+		last_x = x;
+	angle = (x - last_x) * 0.002;
+	if (angle != 0)
+	{
+		double old_dir_x = game->mlx->dir_x;
+		double old_plane_x = game->mlx->plane_x;
+
+		game->mlx->dir_x = game->mlx->dir_x * cos(angle) - game->mlx->dir_y * sin(angle);
+		game->mlx->dir_y = old_dir_x * sin(angle) + game->mlx->dir_y * cos(angle);
+		game->mlx->plane_x = game->mlx->plane_x * cos(angle) - game->mlx->plane_y * sin(angle);
+		game->mlx->plane_y = old_plane_x * sin(angle) + game->mlx->plane_y * cos(angle);
+	}
+	last_x = x;
+	mlx_mouse_move(game->mlx->mlx, game->mlx->win, center_x, center_y);
+	return (0);
 }
 
 flood_fill.c
@@ -298,7 +334,10 @@ void	flood_fill(t_data *data, char **map, int x, int y)
 {
 	if (y < 0 || y >= data->map_height
 		|| x < 0 || x >= (int)ft_strlen(map[y]))
+	{
+		fprintf(stderr, "Flood fill escaped at (%d, %d)\n", x, y);
 		error_exit("Map leak: flood escaped the map!", data);
+	}
 	if (map[y][x] == '1' || map[y][x] == 'F')
 		return ;
 	if (map[y][x] == ' ')
@@ -440,7 +479,10 @@ void	validate_map_char_at(t_data *data, int x, int y, int *player_count)
 
 	c = data->map[y][x];
 	if (!ft_strchr(MAP_CHARS, c))
+	{
+		fprintf(stderr, "Invalid character '%c' at (%d, %d)\n", c, x, y);
 		error_exit("Wait, your map has invalid characters!", data);
+	}
 	if (ft_strchr(PLAYER_CHARS, c))
 	{
 		(*player_count)++;
@@ -631,19 +673,14 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 	draw_vision(mlx, tile_size);
 }
 
-
-void redraw_minimap(t_data *data, t_mlx_data *mlx)
-{
-	ft_bzero(mlx->img_addr, H * mlx->line_size);
-	draw_background(mlx, 0x0000FF, 0x00FF00);
-	minimap(data, mlx);
-	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
-}
-
 static int game_loop(t_game *game)
 {
 	update_player_position(game);
-	redraw_minimap(game->data, game->mlx);
+	ft_bzero(game->mlx->img_addr, H * game->mlx->line_size);
+	draw_background(game->mlx, game->data->ceiling, game->data->floor);
+	render_view(game);
+	minimap(game->data, game->mlx);
+	mlx_put_image_to_window(game->mlx->mlx, game->mlx->win, game->mlx->img, 0, 0);
 	return (0);
 }
 
@@ -785,22 +822,24 @@ parser_cub.c
 
 #include "cub3d.h"
 
-void	parse_lines_loop(int fd, t_data *data,
-			t_list **map_lines, int *max_width)
+void parse_lines_loop(int fd, t_data *data,
+					  t_list **map_lines, int *max_width)
 {
-	char		*line;
-	int			map_started;
-	t_parse_ctx	ctx;
+	char *line;
+	int map_started;
+	//t_parse_ctx ctx;
+	int line_num = 1;
 
 	map_started = 0;
-	ctx.data = data;
-	ctx.map_lines = map_lines;
-	ctx.max_width = max_width;
+	//ctx.data = data;
+	//ctx.map_lines = map_lines;
+	//ctx.max_width = max_width;
 	line = get_next_line(fd);
 	while (line)
 	{
 		char *nl = strchr(line, '\n');
-		if (nl) *nl = '\0';
+		if (nl)
+			*nl = '\0';
 
 		if (map_started)
 		{
@@ -813,6 +852,7 @@ void	parse_lines_loop(int fd, t_data *data,
 			{
 				free(line);
 				line = get_next_line(fd);
+				line_num++;
 				continue;
 			}
 			if (trimmed[0] == '\0')
@@ -820,6 +860,7 @@ void	parse_lines_loop(int fd, t_data *data,
 				free(trimmed);
 				free(line);
 				line = get_next_line(fd);
+				line_num++;
 				continue;
 			}
 			int res = handle_non_map_line(trimmed, data, map_lines, max_width);
@@ -834,28 +875,44 @@ void	parse_lines_loop(int fd, t_data *data,
 			}
 			else
 			{
+				fprintf(stderr, "Error\nUnrecognized line at %d: \"%s\"\n", line_num, line);
 				free(trimmed);
 				free(line);
-				error_exit("Unrecognized line in file", data);
+				error_exit("Parsing failed due to unrecognized line.", data);
 			}
 		}
 		line = get_next_line(fd);
+		line_num++;
 	}
 }
 
-void	check_required_elements(t_data *data)
+void check_required_elements(t_data *data)
 {
-	if (!data->north || !data->south || !data->east
-		||!data->west || data->floor == -1 || data->ceiling == -1)
+	if (!data->north || !data->south || !data->east || !data->west || data->floor == -1 || data->ceiling == -1)
+	{
+		fprintf(stderr, "Error\nMissing required map elements:\n");
+		if (!data->north)
+			fprintf(stderr, "- North texture (NO)\n");
+		if (!data->south)
+			fprintf(stderr, "- South texture (SO)\n");
+		if (!data->east)
+			fprintf(stderr, "- East texture (EA)\n");
+		if (!data->west)
+			fprintf(stderr, "- West texture (WE)\n");
+		if (data->floor == -1)
+			fprintf(stderr, "- Floor color (F)\n");
+		if (data->ceiling == -1)
+			fprintf(stderr, "- Ceiling color (C)\n");
 		error_exit("There's something missing in your map!", data);
+	}
 }
 
-t_data	*parse_cub_file(char *filename)
+t_data *parse_cub_file(char *filename)
 {
-	int		fd;
-	t_data	*data;
-	t_list	*map_lines;
-	int		max_width;
+	int fd;
+	t_data *data;
+	t_list *map_lines;
+	int max_width;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
@@ -945,6 +1002,7 @@ int	parse_texture(char *line, t_data *data, const char *id)
 		return (0);
 	if (access(path, R_OK))
 	{
+		fprintf(stderr, "Error: Cannot access texture file: %s\n", path);
 		free(path);
 		return (0);
 	}
@@ -969,7 +1027,10 @@ int	parse_color_line(char *trimmed, t_data *data)
 	if (trimmed[0] == 'F' && ft_isspace(trimmed[1]))
 	{
 		if (!parse_color(trimmed + 2, data, 'F'))
+		{
+			fprintf(stderr, "Error: Invalid floor color format: \"%s\"\n", trimmed + 2);
 			error_exit("Invalid floor color!", data);
+		}
 		return (1);
 	}
 	else if (trimmed[0] == 'C' && ft_isspace(trimmed[1]))
@@ -979,6 +1040,142 @@ int	parse_color_line(char *trimmed, t_data *data)
 		return (1);
 	}
 	return (0);
+}
+
+ray_cast.c
+
+#include "cub3d.h"
+
+static double	*ray_direction(t_game *game, int x)
+{
+	double	camera_x;
+	double	*ray;
+
+	ray = malloc(sizeof(double) * 2);
+	if (!ray)
+		return (NULL);
+	camera_x = 2 * x / (double)(W) - 1;
+	ray[0] = game->mlx->dir_x + game->mlx->plane_x * camera_x;
+	ray[1] = game->mlx->dir_y + game->mlx->plane_y * camera_x;
+	return (ray);
+}
+
+#include <math.h>
+
+static double	ray_distance(t_game *game, int x)
+{
+	double	*dir = ray_direction(game, x);
+	if (!dir)
+		return (-1); // erro de alocação
+
+	int	map_x = (int)game->mlx->pos_x;
+	int	map_y = (int)game->mlx->pos_y;
+
+	double	delta_x = fabs(1 / dir[0]);
+	double	delta_y = fabs(1 / dir[1]);
+
+	int		step_x;
+	int		step_y;
+	double	side_dist_x;
+	double	side_dist_y;
+
+	int		hit = 0;
+	int		side;
+
+	// STEP E DISTÂNCIA INICIAL
+	if (dir[0] < 0)
+	{
+		step_x = -1;
+		side_dist_x = (game->mlx->pos_x - map_x) * delta_x;
+	}
+	else
+	{
+		step_x = 1;
+		side_dist_x = (map_x + 1.0 - game->mlx->pos_x) * delta_x;
+	}
+	if (dir[1] < 0)
+	{
+		step_y = -1;
+		side_dist_y = (game->mlx->pos_y - map_y) * delta_y;
+	}
+	else
+	{
+		step_y = 1;
+		side_dist_y = (map_y + 1.0 - game->mlx->pos_y) * delta_y;
+	}
+
+	// LOOP DDA
+	while (!hit)
+	{
+		if (side_dist_x < side_dist_y)
+		{
+			side_dist_x += delta_x;
+			map_x += step_x;
+			side = 0;
+		}
+		else
+		{
+			side_dist_y += delta_y;
+			map_y += step_y;
+			side = 1;
+		}
+		if (game->data->map[map_y][map_x] == '1')
+			hit = 1;
+	}
+
+	free(dir);
+	if (side == 0)
+		return (side_dist_x - delta_x);
+	else
+		return (side_dist_y - delta_y);
+}
+
+void draw_wall(t_mlx_data *mlx, int x, double dist)
+{
+	int line_height;
+	int draw_start;
+	int draw_end;
+	int y;
+
+	if (dist <= 0)
+		dist = 1;
+
+	line_height = (int)(H / (double)dist); // quanto menor a distância, maior a parede
+
+	draw_start = -line_height / 2 + (H / 2);
+	if (draw_start < 0)
+		draw_start = 0;
+
+	draw_end = (line_height / 2) + (H / 2);
+	if (draw_end >= H)
+		draw_end = H - 1;
+
+	y = draw_start;
+	while (y < draw_end)
+	{
+		// Calculate shade: closer = brighter, farther = darker
+		double shade = 1.0 / (1.0 + dist * 0.1);
+		if (shade < 0.2)
+			shade = 0.2;
+		int color = ((int)(255 * shade) << 16) | ((int)(255 * shade) << 8) | (int)(255 * shade);
+		draw_pixel(mlx, x, y, color);
+		y++;
+	}
+}
+
+
+void	render_view(t_game *game)
+{
+	int	x;
+	double	dist;
+
+	x = 0;
+	while(x < W)
+	{
+		dist = ray_distance(game, x);
+		draw_wall(game->mlx, x, dist);
+		x++;
+	}
 }
 
 map_processing_utils.c
@@ -1085,7 +1282,7 @@ int	handle_non_map_line(char *trimmed,
 void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width, t_data *data)
 {
 	if (trimmed[0] == '\0')
-		error_exit("Empty line in map", data);
+		error_exit("Empty line detected inside map definition. Check for blank lines in your map.", data);
 	add_map_line(trimmed, map_lines, max_width);
 }
 
