@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 16:30:41 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/25 17:04:59 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:15:30 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,24 @@ void toggle_door(t_game *game)
 	{
 		t_door *door = get_door(game->data, dx, dy);
 		if (door)
-			door->is_open = !door->is_open;
+		{
+			if (door->is_open)
+			{
+				double px = game->mlx->pos_x;
+				double py = game->mlx->pos_y;
+				double margin = 0.2; // adjust as needed
+				if (px > dx + margin || px < dx - margin ||
+					py > dy + margin || py < dy - margin)
+				{
+					door->is_open = 0;
+				}
+				// else: too close, do not close
+			}
+			else
+			{
+				door->is_open = 1;
+			}
+		}
 	}
 }
 
