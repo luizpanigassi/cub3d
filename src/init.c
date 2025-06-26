@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 08:10:39 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/25 16:52:17 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 13:12:45 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,45 @@ void	init_player(t_game *game)
 	setup_orientation(game->mlx, game->data->player_direction);
 }
 
+void load_fire_textures(t_mlx_data *mlx, t_data *data)
+{
+    char *paths[FIREBALL_FRAMES] = {
+        "textures/fire/fire0.xpm",
+        "textures/fire/fire1.xpm",
+        "textures/fire/fire2.xpm",
+        "textures/fire/fire3.xpm"
+    };
+    int i = 0;
+
+    printf("Loading fireball textures...\n");
+    while (i < FIREBALL_FRAMES)
+    {
+        mlx->fire_tex[i] = load_xpm(mlx->mlx, paths[i]);
+        if (!mlx->fire_tex[i])
+        {
+            printf("Error: Failed to load fire texture %d: %s\n", i, paths[i]);
+            error_exit("Fire texture loading failed", data);
+        }
+        printf("Loaded fire texture %d: %dx%d\n", 
+              i, mlx->fire_tex[i]->w, mlx->fire_tex[i]->h);
+        i++;
+    }
+}
+
+void init_fireballs(t_mlx_data *mlx)
+{
+    int i = 0;
+
+    printf("Initializing fireballs...\n");
+    while (i < MAX_FIREBALLS)
+    {
+        mlx->fireballs[i].active = 0;
+        mlx->fireballs[i].frame = 0;
+        mlx->fireballs[i].frame_count = 0;
+        i++;
+    }
+}
+
 void	init_textures(t_game *game)
 {
 	t_mlx_data	*mlx = game->mlx;
@@ -80,6 +119,8 @@ void	init_textures(t_game *game)
 	mlx->textures[2] = load_xpm(mlx->mlx, game->data->east);
 	mlx->textures[3] = load_xpm(mlx->mlx, game->data->west);
 	mlx->textures[4] = load_xpm(mlx->mlx, "textures/door.xpm");
+	load_fire_textures(mlx, game->data);
+   init_fireballs(mlx);
 
 	if (!mlx->textures[0] || !mlx->textures[1]
 		|| !mlx->textures[2] || !mlx->textures[3] || !mlx->textures[4])

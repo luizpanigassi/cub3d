@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:20:47 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/25 16:42:35 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 13:04:08 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@ int key_press(int keycode, t_game *game)
 	else if (keycode == ESC_KEY)
 	{
 		close_event(game);
+	}
+	else if (keycode == F_KEY)
+	{
+		spawn_fireball(game->mlx);
 	}
 	return (0);
 }

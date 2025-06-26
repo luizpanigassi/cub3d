@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_window.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 20:01:19 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/25 17:00:04 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 13:05:32 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,9 +161,11 @@ static void minimap(t_data *data, t_mlx_data *mlx)
 static int game_loop(t_game *game)
 {
 	update_player_position(game);
+	update_fireballs(game->mlx);
 	ft_bzero(game->mlx->img_addr, H * game->mlx->line_size);
 	draw_background(game->mlx, game->data->ceiling, game->data->floor);
 	render_view(game);
+	render_fireballs(game->mlx);
 	minimap(game->data, game->mlx);
 	mlx_put_image_to_window(game->mlx->mlx, game->mlx->win, game->mlx->img, 0, 0);
 	return (0);

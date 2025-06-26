@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+         #
+#    By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/17 18:10:20 by luinasci          #+#    #+#              #
-#    Updated: 2025/06/25 17:35:26 by luinasci         ###   ########.fr        #
+#    Updated: 2025/06/26 12:55:55 by jcologne         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,7 @@ SRCS = \
 	$(SRC_DIR)/drawing_utils.c \
 	$(SRC_DIR)/texture_loader.c \
 	$(SRC_DIR)/door.c \
+	$(SRC_DIR)/fire.c \
 	$(UTILS_DIR)/map_processing_utils.c \
 	$(UTILS_DIR)/map_utils.c \
 	$(UTILS_DIR)/utils.c \

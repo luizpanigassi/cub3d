@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/25 17:04:34 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 13:03:42 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # define S_KEY 115
 # define D_KEY 100
 # define E_KEY 101
+# define F_KEY 102
 # define LEFT_KEY 65361
 # define RIGHT_KEY 65363
 # define MOVE_SPEED 0.05
@@ -44,6 +45,25 @@
 # define TILE_SIZE 40
 # define MINIMAP_MAX_W 300
 # define MINIMAP_MAX_H 300
+
+//FIREBALLS
+# define MAX_FIREBALLS 6
+# define FIREBALL_FRAMES 4
+# define FIREBALL_SPEED 0.2
+# define FIREBALL_ANIM_SPEED 2
+
+
+typedef struct s_fireball
+{
+	double  x;
+	double  y;
+	double  dir_x;
+	double  dir_y;
+	int     active;
+	int     distance;
+	int     frame;
+	int     frame_count;
+} t_fireball;
 
 typedef struct s_door {
 	int	x;
@@ -108,6 +128,8 @@ typedef struct mlx_data
 	double	dir_y;
 	double	plane_x;
 	double	plane_y;
+	t_fireball    fireballs[MAX_FIREBALLS];
+	t_img         *fire_tex[FIREBALL_FRAMES];
 }	t_mlx_data;
 
 typedef struct s_parse_ctx
@@ -224,5 +246,10 @@ void	render_view(t_game *game);
 
 // TEXTURE LOADER
 t_img *load_xpm(void *mlx, char *path);
+
+//FIRE
+void spawn_fireball(t_mlx_data *mlx);
+void render_fireballs(t_mlx_data *mlx);
+void update_fireballs(t_mlx_data *mlx);
 
 #endif
