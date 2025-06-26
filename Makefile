@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/17 18:10:20 by luinasci          #+#    #+#              #
-#    Updated: 2025/06/26 12:55:55 by jcologne         ###   ########.fr        #
+#    Updated: 2025/06/26 19:31:37 by luinasci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,24 +29,31 @@ INCLUDES	=	-Iincludes -I$(MLX_DIR) -I/usr/include -I$(LIBFT_DIR)
 # List all .c files with their paths
 SRCS = \
 	$(SRC_DIR)/controller.c \
+	$(SRC_DIR)/door_utils.c \
+	$(SRC_DIR)/door.c \
+	$(SRC_DIR)/draw.c \
+	$(SRC_DIR)/drawing_utils.c \
 	$(SRC_DIR)/error_handler.c \
 	$(SRC_DIR)/events.c \
+	$(SRC_DIR)/fire_utils.c \
+	$(SRC_DIR)/fire.c \
 	$(SRC_DIR)/flood_fill.c \
+	$(SRC_DIR)/init.c \
 	$(SRC_DIR)/main.c \
 	$(SRC_DIR)/map_validator.c \
+	$(SRC_DIR)/minimap.c \
+	$(SRC_DIR)/mlx_window.c \
 	$(SRC_DIR)/movement.c \
 	$(SRC_DIR)/parser_cub.c \
+	$(SRC_DIR)/parser_utils.c \
 	$(SRC_DIR)/parsers.c \
-	$(SRC_DIR)/mlx_window.c \
-	$(SRC_DIR)/init.c \
+	$(SRC_DIR)/ray_cast_utils.c \
 	$(SRC_DIR)/ray_cast.c \
-	$(SRC_DIR)/drawing_utils.c \
 	$(SRC_DIR)/texture_loader.c \
-	$(SRC_DIR)/door.c \
-	$(SRC_DIR)/fire.c \
 	$(UTILS_DIR)/map_processing_utils.c \
 	$(UTILS_DIR)/map_utils.c \
 	$(UTILS_DIR)/utils.c \
+	$(UTILS_DIR)/utils2.c \
 
 # Convert to obj paths
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)

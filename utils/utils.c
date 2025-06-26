@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:37:44 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/20 12:53:36 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 19:16:38 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,4 @@ char	*trim_and_free_line(char *line)
 	trimmed = ft_strtrim(line, " \t\n");
 	free(line);
 	return (trimmed);
-}
-
-int	ft_isspace(int c)
-{
-	return (c == ' ' || c == '\t' || c == '\n'
-		|| c == '\v' || c == '\f' || c == '\r');
 }

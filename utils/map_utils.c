@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:42:35 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/24 17:34:02 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 16:49:01 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,10 @@ int	handle_non_map_line(char *trimmed,
 	}
 }
 
-void	handle_map_line(char *trimmed, t_list **map_lines, int *max_width, t_data *data)
+void	handle_map_line(char *trimmed, t_list **map_lines,
+		int *max_width, t_data *data)
 {
 	if (trimmed[0] == '\0')
-		error_exit("Empty line detected inside map definition. Check for blank lines in your map.", data);
+		error_exit("Empty line detected inside map definition.", data);
 	add_map_line(trimmed, map_lines, max_width);
 }

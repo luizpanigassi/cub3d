@@ -6,33 +6,44 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 16:30:41 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/25 17:15:30 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 19:06:30 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void toggle_door(t_game *game)
+static int	is_player_far_from_door(t_game *game, int dx, int dy)
 {
-	int dx = (int)(game->mlx->pos_x + game->mlx->dir_x);
-	int dy = (int)(game->mlx->pos_y + game->mlx->dir_y);
+	double	px;
+	double	py;
+	double	margin;
 
+	px = game->mlx->pos_x;
+	py = game->mlx->pos_y;
+	margin = 0.2;
+	return (px > dx + margin || px < dx - margin
+		|| py > dy + margin || py < dy - margin);
+}
+
+void	toggle_door(t_game *game)
+{
+	int		dx;
+	int		dy;
+	t_door	*door;
+
+	dy = (int)(game->mlx->pos_y + game->mlx->dir_y);
+	dx = (int)(game->mlx->pos_x + game->mlx->dir_x);
 	if (is_door_at(game->data, dx, dy))
 	{
-		t_door *door = get_door(game->data, dx, dy);
+		door = get_door(game->data, dx, dy);
 		if (door)
 		{
 			if (door->is_open)
 			{
-				double px = game->mlx->pos_x;
-				double py = game->mlx->pos_y;
-				double margin = 0.2; // adjust as needed
-				if (px > dx + margin || px < dx - margin ||
-					py > dy + margin || py < dy - margin)
+				if (is_player_far_from_door(game, dx, dy))
 				{
 					door->is_open = 0;
 				}
-				// else: too close, do not close
 			}
 			else
 			{
@@ -42,40 +53,25 @@ void toggle_door(t_game *game)
 	}
 }
 
-t_door *get_door(t_data *data, int x, int y)
+void	try_toggle_door(t_game *game)
 {
-	int i = 0;
+	int		tx;
+	int		ty;
+	t_door	*door;
 
-	while (i < data->door_count)
-	{
-		if (data->doors[i].x == x && data->doors[i].y == y)
-			return &data->doors[i];
-		i++;
-	}
-	return NULL;
-}
-
-int is_door_open(t_data *data, int x, int y)
-{
-	t_door *door = get_door(data, x, y);
-	return (door && door->is_open);
-}
-
-void try_toggle_door(t_game *game)
-{
-	int tx = (int)(game->mlx->pos_x + game->mlx->dir_x);
-	int ty = (int)(game->mlx->pos_y + game->mlx->dir_y);
-	t_door *door = get_door(game->data, tx, ty);
-
+	tx = (int)(game->mlx->pos_x + game->mlx->dir_x);
+	ty = (int)(game->mlx->pos_y + game->mlx->dir_y);
+	door = get_door(game->data, tx, ty);
 	if (door)
 		door->is_open = !door->is_open;
 }
 
-void register_doors(t_data *data)
+void	register_doors(t_data *data)
 {
-	int y = 0;
-	int x;
+	int	y;
+	int	x;
 
+	y = 0;
 	data->door_count = 0;
 	while (y < data->map_height)
 	{
@@ -96,9 +92,4 @@ void register_doors(t_data *data)
 		}
 		y++;
 	}
-}
-
-int is_door_at(t_data *data, int x, int y)
-{
-	return (data->map[y][x] == 'D');
 }

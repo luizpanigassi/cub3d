@@ -3,37 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   drawing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42.fr>          +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 12:23:16 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/24 19:43:08 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/26 16:52:43 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void draw_pixel(t_mlx_data *mlx, int x, int y, int color)
+void	draw_pixel(t_mlx_data *mlx, int x, int y, int color)
 {
-	int offset;
+	int	offset;
 
 	if (x < 0 || x >= W || y < 0 || y >= H)
-		return;
+		return ;
 	offset = (y * mlx->line_size) + (x * (mlx->bpp / 8));
 	*(int *)(mlx->img_addr + offset) = color;
 }
 
-void draw_h_line(t_mlx_data *mlx, int y, int color)
+void	draw_h_line(t_mlx_data *mlx, int y, int color)
 {
-	int 	x;
+	int	x;
 
 	if (y >= H)
-		return;
+		return ;
 	x = 0;
 	while (x < W)
 		draw_pixel(mlx, x++, y, color);
 }
 
-void draw_background(t_mlx_data *mlx, int sky, int ground)
+void	draw_background(t_mlx_data *mlx, int sky, int ground)
 {
 	int	y;
 

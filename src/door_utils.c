@@ -1,28 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   texture_loader.c                                   :+:      :+:    :+:   */
+/*   door_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/25 15:41:33 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/26 16:48:28 by luinasci         ###   ########.fr       */
+/*   Created: 2025/06/26 19:05:41 by luinasci          #+#    #+#             */
+/*   Updated: 2025/06/26 19:06:18 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-t_img	*load_xpm(void *mlx, char *path)
+t_door	*get_door(t_data *data, int x, int y)
 {
-	t_img	*img;
+	int	i;
 
-	img = malloc(sizeof(t_img));
-	if (!img)
-		return (NULL);
-	img->img = mlx_xpm_file_to_image(mlx, path, &img->w, &img->h);
-	if (!img->img)
-		error_exit("Failed to load XPM texture", NULL);
-	img->addr = mlx_get_data_addr(img->img,
-			&img->bpp, &img->line_len, &img->endian);
-	return (img);
+	i = 0;
+	while (i < data->door_count)
+	{
+		if (data->doors[i].x == x && data->doors[i].y == y)
+			return (&data->doors[i]);
+		i++;
+	}
+	return (NULL);
+}
+
+int	is_door_at(t_data *data, int x, int y)
+{
+	return (data->map[y][x] == 'D');
+}
+
+int	is_door_open(t_data *data, int x, int y)
+{
+	t_door	*door;
+
+	door = get_door(data, x, y);
+	return (door && door->is_open);
 }

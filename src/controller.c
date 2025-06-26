@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:04:21 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/25 16:43:09 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 15:52:36 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,15 @@ int	is_walkable(t_data *data, double x, double y)
 
 void	try_movement(t_mlx_data *mlx, double dx, double dy)
 {
-	double	new_x = mlx->pos_x + dx;
-	double	new_y = mlx->pos_y + dy;
+	double	new_x;
+	double	new_y;
 
-	if (is_walkable(mlx->data, new_x + COLLISION_MARGIN, mlx->pos_y) &&
-		is_walkable(mlx->data, new_x - COLLISION_MARGIN, mlx->pos_y))
+	new_x = mlx->pos_x + dx;
+	new_y = mlx->pos_y + dy;
+	if (is_walkable(mlx->data, new_x + COLLISION_MARGIN, mlx->pos_y)
+		&& is_walkable(mlx->data, new_x - COLLISION_MARGIN, mlx->pos_y))
 		mlx->pos_x = new_x;
-	if (is_walkable(mlx->data, mlx->pos_x, new_y + COLLISION_MARGIN) &&
-		is_walkable(mlx->data, mlx->pos_x, new_y - COLLISION_MARGIN))
+	if (is_walkable(mlx->data, mlx->pos_x, new_y + COLLISION_MARGIN)
+		&& is_walkable(mlx->data, mlx->pos_x, new_y - COLLISION_MARGIN))
 		mlx->pos_y = new_y;
 }

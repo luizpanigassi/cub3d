@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ray_cast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 18:15:33 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/26 14:34:08 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/26 19:27:31 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static double *ray_direction(t_game *game, int x)
+double	*ray_direction(t_game *game, int x)
 {
-	double camera_x;
-	double *ray;
+	double	camera_x;
+	double	*ray;
 
 	ray = malloc(sizeof(double) * 2);
 	if (!ray)
@@ -26,151 +26,86 @@ static double *ray_direction(t_game *game, int x)
 	return (ray);
 }
 
-t_ray_hit ray_distance(t_game *game, int x)
+void	perform_dda(t_game *game, t_dda_ctx *ctx)
 {
-	t_ray_hit hit;
-	hit.tex_id = -1;
-	double *dir = ray_direction(game, x);
-	if (!dir)
-		return ((t_ray_hit){-1, 0, 0, 0, 0, 0});
+	ctx->hit_wall = 0;
+	while (!ctx->hit_wall)
+	{
+		if (ctx->side_dist_x < ctx->side_dist_y)
+		{
+			ctx->side_dist_x += ctx->delta_x;
+			ctx->map_x += ctx->step_x;
+			ctx->side = 0;
+		}
+		else
+		{
+			ctx->side_dist_y += ctx->delta_y;
+			ctx->map_y += ctx->step_y;
+			ctx->side = 1;
+		}
+		if (game->data->map[ctx->map_y][ctx->map_x] == '1')
+			ctx->hit_wall = 1;
+		else if (game->data->map[ctx->map_y][ctx->map_x] == 'D'
+			&& !is_door_open(game->data, ctx->map_x, ctx->map_y))
+		{
+			ctx->hit_wall = 1;
+			ctx->tex_id = 4;
+		}
+	}
+}
 
-	hit.dir_x = dir[0];
-	hit.dir_y = dir[1];
-
-	int map_x = (int)game->mlx->pos_x;
-	int map_y = (int)game->mlx->pos_y;
-
-	double delta_x = fabs(1.0 / dir[0]);
-	double delta_y = fabs(1.0 / dir[1]);
-
-	int step_x, step_y;
-	double side_dist_x, side_dist_y;
-
+void	init_dda_ctx(t_game *game, double *dir, t_dda_ctx *ctx)
+{
+	ctx->map_x = (int)game->mlx->pos_x;
+	ctx->map_y = (int)game->mlx->pos_y;
+	ctx->delta_x = fabs(1.0 / dir[0]);
+	ctx->delta_y = fabs(1.0 / dir[1]);
 	if (dir[0] < 0)
 	{
-		step_x = -1;
-		side_dist_x = (game->mlx->pos_x - map_x) * delta_x;
+		ctx->step_x = -1;
+		ctx->side_dist_x = (game->mlx->pos_x - ctx->map_x) * ctx->delta_x;
 	}
 	else
 	{
-		step_x = 1;
-		side_dist_x = (map_x + 1.0 - game->mlx->pos_x) * delta_x;
+		ctx->step_x = 1;
+		ctx->side_dist_x = (ctx->map_x + 1.0 - game->mlx->pos_x) * ctx->delta_x;
 	}
 	if (dir[1] < 0)
 	{
-		step_y = -1;
-		side_dist_y = (game->mlx->pos_y - map_y) * delta_y;
+		ctx->step_y = -1;
+		ctx->side_dist_y = (game->mlx->pos_y - ctx->map_y) * ctx->delta_y;
 	}
 	else
 	{
-		step_y = 1;
-		side_dist_y = (map_y + 1.0 - game->mlx->pos_y) * delta_y;
-	}
-
-	int hit_wall = 0;
-	while (!hit_wall)
-	{
-		if (side_dist_x < side_dist_y)
-		{
-			side_dist_x += delta_x;
-			map_x += step_x;
-			hit.side = 0; // vertical
-		}
-		else
-		{
-			side_dist_y += delta_y;
-			map_y += step_y;
-			hit.side = 1; // horizontal
-		}
-		if (game->data->map[map_y][map_x] == '1')
-			hit_wall = 1;
-		else if (game->data->map[map_y][map_x] == 'D' && !is_door_open(game->data, map_x, map_y))
-		{
-			hit_wall = 1;
-			hit.tex_id = 4; //porta
-		}
-	}
-
-	// Wall distance
-	if (hit.side == 0)
-		hit.dist = side_dist_x - delta_x;
-	else
-		hit.dist = side_dist_y - delta_y;
-
-	// Wall orientation (texture ID)
-	if (hit.tex_id != 4) // If not a door
-	{
-		if (hit.side == 0)
-			hit.tex_id = (dir[0] > 0) ? 3 : 2; // west : east
-		else
-			hit.tex_id = (dir[1] > 0) ? 0 : 1; // north : south
-	}
-
-	// Wall X position for texture mapping
-	if (hit.side == 0)
-		hit.wall_x = game->mlx->pos_y + hit.dist * dir[1];
-	else
-		hit.wall_x = game->mlx->pos_x + hit.dist * dir[0];
-	hit.wall_x -= floor(hit.wall_x);
-
-	free(dir);
-	return (hit);
-}
-
-int apply_shade(int color, double distance)
-{
-	if (distance < 1.0)
-		distance = 1.0;
-
-	double shade = 1 / (distance * 0.15 + 1);
-	if (shade > 1.0) shade = 1.0;
-
-	int r = ((color >> 16) & 0xFF) * shade;
-	int g = ((color >> 8) & 0xFF) * shade;
-	int b = (color & 0xFF) * shade;
-
-	return (r << 16) | (g << 8) | b;
-}
-
-void draw_wall(t_mlx_data *mlx, int x, t_ray_hit hit)
-{
-	if (hit.dist <= 0)
-		hit.dist = 1.0;
-
-	int line_height = (int)(H / hit.dist);
-	int draw_start = -line_height / 2 + H / 2;
-	int draw_end = line_height / 2 + H / 2;
-
-	if (draw_start < 0)
-		draw_start = 0;
-	if (draw_end >= H)
-		draw_end = H - 1;
-
-	t_img *tex = mlx->textures[hit.tex_id];
-	int tex_x = (int)(hit.wall_x * (double)tex->w);
-
-	// Flip texture X coord for correct facing direction
-	if ((hit.side == 0 && hit.dir_x > 0) || (hit.side == 1 && hit.dir_y < 0))
-		tex_x = tex->w - tex_x - 1;
-
-	for (int y = draw_start; y < draw_end; y++)
-	{
-		int d = y * 256 - H * 128 + line_height * 128;
-		int tex_y = (d * tex->h) / line_height / 256;
-
-		int color = *(int *)(tex->addr + (tex_y * tex->line_len + tex_x * (tex->bpp / 8)));
-		color = apply_shade(color, hit.dist);
-		draw_pixel(mlx, x, y, color);
+		ctx->step_y = 1;
+		ctx->side_dist_y = (ctx->map_y + 1.0 - game->mlx->pos_y) * ctx->delta_y;
 	}
 }
 
-
-void render_view(t_game *game)
+void	draw_wall_column(t_mlx_data *mlx, int x,
+			t_wall_draw_ctx *ctx, double dist)
 {
-	int x = 0;
+	while (ctx->y < ctx->draw_end)
+	{
+		ctx->d = ctx->y * 256 - H * 128 + ctx->line_height * 128;
+		ctx->tex_y = (ctx->d * ctx->tex->h) / ctx->line_height / 256;
+		ctx->color = *(int *)(ctx->tex->addr + (ctx->tex_y
+					* ctx->tex->line_len + ctx->tex_x * (ctx->tex->bpp / 8)));
+		ctx->color = apply_shade(ctx->color, dist);
+		draw_pixel(mlx, x, ctx->y, ctx->color);
+		ctx->y++;
+	}
+}
+
+void	render_view(t_game *game)
+{
+	int			x;
+	t_ray_hit	hit;
+
+	x = 0;
 	while (x < W)
 	{
-		t_ray_hit hit = ray_distance(game, x);
+		hit = ray_distance(game, x);
 		draw_wall(game->mlx, x, hit);
 		x++;
 	}
