@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:42:35 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/26 16:49:01 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 19:40:37 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	handle_non_map_line(char *trimmed,
 {
 	(void)map_lines;
 	(void)max_width;
-
 	if (parse_texture_line(trimmed, data))
 	{
 		free(trimmed);
