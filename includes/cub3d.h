@@ -6,7 +6,7 @@
 /*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/26 13:03:42 by jcologne         ###   ########.fr       */
+/*   Updated: 2025/06/26 13:59:33 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@
 # define F_KEY 102
 # define LEFT_KEY 65361
 # define RIGHT_KEY 65363
-# define MOVE_SPEED 0.05
-# define ROTATION_SPEED 0.02
+# define MOVE_SPEED 0.1
+# define ROTATION_SPEED 0.05
 # define COLLISION_MARGIN 0.1
 # define NUM_RAYS 1200
 # define MAX_DOORS 128
@@ -50,7 +50,7 @@
 # define MAX_FIREBALLS 6
 # define FIREBALL_FRAMES 4
 # define FIREBALL_SPEED 0.2
-# define FIREBALL_ANIM_SPEED 2
+# define FIREBALL_ANIM_SPEED 0.5
 
 
 typedef struct s_fireball

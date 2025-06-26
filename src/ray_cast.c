@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray_cast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcologne <jcologne@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 18:15:33 by jcologne          #+#    #+#             */
-/*   Updated: 2025/06/25 17:07:19 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/26 14:34:08 by jcologne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,20 @@ t_ray_hit ray_distance(t_game *game, int x)
 	return (hit);
 }
 
+int apply_shade(int color, double distance)
+{
+	if (distance < 1.0)
+		distance = 1.0;
+
+	double shade = 1 / (distance * 0.15 + 1);
+	if (shade > 1.0) shade = 1.0;
+
+	int r = ((color >> 16) & 0xFF) * shade;
+	int g = ((color >> 8) & 0xFF) * shade;
+	int b = (color & 0xFF) * shade;
+
+	return (r << 16) | (g << 8) | b;
+}
 
 void draw_wall(t_mlx_data *mlx, int x, t_ray_hit hit)
 {
@@ -145,6 +159,7 @@ void draw_wall(t_mlx_data *mlx, int x, t_ray_hit hit)
 		int tex_y = (d * tex->h) / line_height / 256;
 
 		int color = *(int *)(tex->addr + (tex_y * tex->line_len + tex_x * (tex->bpp / 8)));
+		color = apply_shade(color, hit.dist);
 		draw_pixel(mlx, x, y, color);
 	}
 }
