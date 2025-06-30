@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:45:31 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/30 15:01:30 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/30 15:04:34 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	close_event(t_game *game)
 	}
 	if (mlx->mlx)
 	{
-		XCloseDisplay(((t_xvar *)mlx->mlx)->display);
+		free(mlx->mlx);
 		mlx->mlx = NULL;
 	}
 	free(mlx);

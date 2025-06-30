@@ -1,0 +1,85 @@
+# Valgrind suppression file for MinilibX leaks
+# These are known library-level leaks that cannot be avoided
+# Usage: valgrind --suppressions=valgrind.supp --leak-check=full ./cub3d maps/test.cub
+
+{
+   MinilibX_mlx_init_leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:mlx_init
+   ...
+}
+
+{
+   MinilibX_X11_Display_leak
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect
+   fun:malloc
+   obj:*/libX11.so*
+   ...
+   fun:mlx_init
+}
+
+{
+   MinilibX_X11_Extension_leak
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect
+   fun:malloc
+   obj:*/libXext.so*
+   ...
+   fun:mlx_init
+}
+
+{
+   MinilibX_XPM_leak
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect
+   fun:malloc
+   fun:mlx_xpm_file_to_image
+   ...
+}
+
+{
+   MinilibX_general_X11_leaks
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible
+   fun:malloc
+   obj:*/libX11.so*
+   ...
+}
+
+{
+   MinilibX_general_Xext_leaks
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible
+   fun:malloc
+   obj:*/libXext.so*
+   ...
+}
+
+{
+   MinilibX_fontconfig_leaks
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible
+   fun:malloc
+   obj:*/libfontconfig.so*
+   ...
+}
+
+# Suppress reachable blocks from graphics libraries
+{
+   Graphics_reachable_blocks
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libX11.so*
+}
+
+{
+   Graphics_reachable_blocks_Xext
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libXext.so*
+}
