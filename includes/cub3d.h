@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 16:03:57 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/26 19:36:35 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/30 15:01:57 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -414,6 +414,7 @@ void		handle_map_line(char *trimmed, t_list **map_lines,
 void		ft_free_array(char **array);
 int			ft_isdigit_str(char *str);
 void		free_data(t_data *data);
+void		free_textures(t_mlx_data *mlx);
 int			ft_strcmp(const char *s1, const char *s2);
 char		*trim_and_free_line(char *line);
 int			ft_isspace(int c);

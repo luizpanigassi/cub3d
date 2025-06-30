@@ -6,7 +6,7 @@
 /*   By: luinasci <luinasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:45:31 by luinasci          #+#    #+#             */
-/*   Updated: 2025/06/26 19:38:03 by luinasci         ###   ########.fr       */
+/*   Updated: 2025/06/30 15:01:30 by luinasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,20 @@ int	close_event(t_game *game)
 
 	mlx = game->mlx;
 	if (mlx->img)
+	{
 		mlx_destroy_image(mlx->mlx, mlx->img);
+		mlx->img = NULL;
+	}
+	free_textures(mlx);
 	if (mlx->win)
+	{
 		mlx_destroy_window(mlx->mlx, mlx->win);
+		mlx->win = NULL;
+	}
 	if (mlx->mlx)
 	{
-		mlx_destroy_display(mlx->mlx);
-		free(mlx->mlx);
+		XCloseDisplay(((t_xvar *)mlx->mlx)->display);
+		mlx->mlx = NULL;
 	}
 	free(mlx);
 	free_data(game->data);
