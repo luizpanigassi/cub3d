@@ -8,7 +8,7 @@ A **3D first-person perspective maze game** built from scratch using **ray-casti
 
 ## 👥 Authors
 
-- **Lucas Inasci** - [@luinasci](https://github.com/luinasci)
+- **Luiz Panigassi** - [@luinasci](https://github.com/luinasci)
 - **João Colognesi** - [@jocologne](https://github.com/jocologne)
 
 *Developed as part of the 42 School curriculum*
